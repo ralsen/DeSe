@@ -1,0 +1,62 @@
+from ~eth with scaling -1 on channel_0
+rrdtool graph   "/Users/ralphfollrichs/Projects/MAC_DaBo64/progs/../png/~eth0_1_day.png" -t 
+                "~eth0 (1_day)" --vertical-label "[bytes/s, bytes/s]" -s "now - 1 day" -e "now" -w 700 -h 200 
+                COMMENT:"                         Durchschnitt   Maximum   Minimum    aktuell\n" 
+                DEF:ds0=/Users/ralphfollrichs/Projects/MAC_DaBo64/progs/../rrd/~eth0.rrd:ds0:AVERAGE 
+                CDEF:ds0n=ds0,-1,\* 
+                VDEF:ds0_av=ds0,AVERAGE 
+                VDEF:ds0_ma=ds0,MAXIMUM 
+                VDEF:ds0_mi=ds0,MINIMUM 
+                VDEF:ds0_ak=ds0,LAST  
+                DEF:ds1=/Users/ralphfollrichs/Projects/MAC_DaBo64/progs/../rrd/~eth0.rrd:ds1:AVERAGE 
+                VDEF:ds1_av=ds1,AVERAGE 
+                VDEF:ds1_ma=ds1,MAXIMUM 
+                VDEF:ds1_mi=ds1,MINIMUM 
+                VDEF:ds1_ak=ds1,LAST  
+                AREA:ds0n#0000FF:"Tx                  " 
+                GPRINT:ds0_av:" %8.2lf" 
+                GPRINT:ds0_ma:" %8.2lf" 
+                GPRINT:ds0_mi:" %8.2lf" 
+                GPRINT:ds0_ak:" %8.2lf" 
+                COMMENT:"                    \n"  
+                AREA:ds1#00FF00:"Rx                  " 
+                GPRINT:ds1_av:" %8.2lf" 
+                GPRINT:ds1_ma:" %8.2lf" 
+                GPRINT:ds1_mi:" %8.2lf" 
+                GPRINT:ds1_ak:" %8.2lf" 
+                COMMENT:"                    \n" 
+
+from weather with scaling 3.6 on chan6
+rrdtool graph   "/Users/ralphfollrichs/Projects/MAC_DaBo64/progs/../png/weather_windspeed_4_hour.png" -t 
+                "weather_windspeed (4_hour)" --vertical-label "[km/h]" -s "now - 4 hour" -e "now" -w 700 -h 200 
+                COMMENT:"                         Durchschnitt   Maximum   Minimum    aktuell\n" 
+                DEF:chan6=/Users/ralphfollrichs/Projects/MAC_DaBo64/progs/../rrd/weather.rrd:chan6:AVERAGE 
+                CDEF:chan6n=chan6,3.6,\* 
+                VDEF:chan6_av=chan6,AVERAGE 
+                VDEF:chan6_ma=chan6,MAXIMUM 
+                VDEF:chan6_mi=chan6,MINIMUM 
+                VDEF:chan6_ak=chan6,LAST  
+                LINE1:chan6#0FF000:"Windspeed           " 
+                GPRINT:chan6_av:" %8.2lf" 
+                GPRINT:chan6_ma:" %8.2lf" 
+                GPRINT:chan6_mi:" %8.2lf" 
+                GPRINT:chan6_ak:" %8.2lf" 
+                COMMENT:"                    windspeed\n" 
+
+rrdtool graph   "/Users/ralphfollrichs/Projects/MAC_DaBo64/progs/../png/weather_windspeed_4_hour.png" -t 
+                "weather_windspeed (4_hour)" --vertical-label "[km/h]" -s "now - 4 hour" -e "now" -w 700 -h 200 
+                COMMENT:"                         Durchschnitt   Maximum   Minimum    aktuell\n" 
+                DEF:chan6=/Users/ralphfollrichs/Projects/MAC_DaBo64/progs/../rrd/weather.rrd:chan6:AVERAGE 
+                CDEF:chan6n=chan6,3.6,\* 
+                VDEF:chan6_av=chan6,AVERAGE 
+                VDEF:chan6_ma=chan6,MAXIMUM 
+                VDEF:chan6_mi=chan6,MINIMUM 
+                VDEF:chan6_ak=chan6,LAST  
+                LINE1:chan6n#0FF000:"Windspeed           " 
+                GPRINT:chan6_av:" %8.2lf" 
+                GPRINT:chan6_ma:" %8.2lf" 
+                GPRINT:chan6_mi:" %8.2lf" 
+                GPRINT:chan6_ak:" %8.2lf" 
+                COMMENT:"                    windspeed\n" 
+
+'VDEF:ds1_av=ds1,AVERAGE VDEF:ds1_ma=ds1,MAXIMUM VDEF:ds1_mi=ds1,MINIMUM VDEF:ds1_ak=ds1,LAST '                

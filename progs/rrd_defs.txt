@@ -1,0 +1,1197 @@
+Hier ist ein optimierter rrdtool create-Befehl, der deine gewünschten Zeiträume von 7 Tagen bis 10 Jahren (3650 Tage) abdeckt, aber den Speicherverbrauch reduziert, indem er die Auflösung mit zunehmender Zeit verringert:
+
+⸻
+
+Optimierte Auflösung
+	•	7 Tage: 1 Minute Auflösung
+	•	30 Tage: 5 Minuten Auflösung
+	•	90 Tage: 15 Minuten Auflösung
+	•	1 Jahr (365 Tage): 1 Stunde Auflösung
+	•	2 Jahre (730 Tage): 2 Stunden Auflösung
+	•	3 Jahre (1095 Tage): 4 Stunden Auflösung
+	•	4 Jahre (1460 Tage): 6 Stunden Auflösung
+	•	5 Jahre (1825 Tage): 12 Stunden Auflösung
+	•	6 Jahre (2190 Tage): 1 Tag Auflösung
+	•	7 Jahre (2555 Tage): 1 Tag Auflösung
+	•	8 Jahre (2920 Tage): 1 Tag Auflösung
+	•	9 Jahre (3285 Tage): 1 Tag Auflösung
+	•	10 Jahre (3650 Tage): 1 Tag Auflösung
+
+⸻
+Zeitraum    Auflösung   Rows (Datenpunkte)
+7 Tage        1 min         10080
+30 Tage       5 min         8640
+90 Tage       15 min        8640
+365 Tage      1 h           8760
+2 Jahre       2 h           8760
+3 Jahre       4 h           6570
+4 Jahre       6 h           5840
+5 Jahre       12 h          3650
+10 Jahre      1 Tag         3650
+
+
+hier der passende Befehl:
+rrdtool create mydata.rrd \
+  --step 60 \
+  DS:wert:GAUGE:120:U:U \
+  RRA:AVERAGE:0.5:1:10080 \
+  RRA:AVERAGE:0.5:5:8640 \
+  RRA:AVERAGE:0.5:15:8640 \
+  RRA:AVERAGE:0.5:60:8760 \
+  RRA:AVERAGE:0.5:120:8760 \
+  RRA:AVERAGE:0.5:240:6570 \
+  RRA:AVERAGE:0.5:360:5840 \
+  RRA:AVERAGE:0.5:720:3650 
+
+Erläuterung
+	•	--step 60 → Grundschrittweite ist 1 Minute.
+	•	DS:wert:GAUGE:120:U:U → Datenquelle (wert) mit Typ GAUGE, erlaubt doppelte Schrittweite (120 Sek.) als Heartbeat.
+	•	RRA-Einträge:
+	•	RRA:AVERAGE:0.5:1:10080 → 1 Minute * 10.080 = 7 Tage
+	•	RRA:AVERAGE:0.5:5:8640 → 5 Minuten * 8.640 = 30 Tage
+	•	usw.
+	•	Mit diesen 10 RRA-Blöcken deckst du alle gewünschten Zeiträume ab, ohne eine extrem große Datei zu erzeugen.
+# -------------------------------------------------------------------------------                      
+
+Hier ist der erweiterte rrdtool create-Befehl, der zusätzlich zu den AVERAGE-Werten auch MIN und MAX speichert – über die von dir gewünschten Zeiträume (7 Tage bis 10 Jahre).
+rrdtool create mydata.rrd \
+  --step 60 \
+  DS:wert:GAUGE:120:U:U \
+  \
+  RRA:AVERAGE:0.5:1:10080 \
+  RRA:AVERAGE:0.5:5:8640 \
+  RRA:AVERAGE:0.5:15:8640 \
+  RRA:AVERAGE:0.5:60:8760 \
+  RRA:AVERAGE:0.5:120:8760 \
+  RRA:AVERAGE:0.5:240:6570 \
+  RRA:AVERAGE:0.5:360:5840 \
+  RRA:AVERAGE:0.5:720:3650 \
+  \
+  RRA:MIN:0.5:1:10080 \
+  RRA:MIN:0.5:5:8640 \
+  RRA:MIN:0.5:15:8640 \
+  RRA:MIN:0.5:60:8760 \
+  RRA:MIN:0.5:120:8760 \
+  RRA:MIN:0.5:240:6570 \
+  RRA:MIN:0.5:360:5840 \
+  RRA:MIN:0.5:720:3650 \
+  \
+  RRA:MAX:0.5:1:10080 \
+  RRA:MAX:0.5:5:8640 \
+  RRA:MAX:0.5:15:8640 \
+  RRA:MAX:0.5:60:8760 \
+  RRA:MAX:0.5:120:8760 \
+  RRA:MAX:0.5:240:6570 \
+  RRA:MAX:0.5:360:5840 \
+  RRA:MAX:0.5:720:3650 
+
+Was hat sich geändert?
+	•	Es wurden 3 Gruppen von RRAs erstellt:
+	•	AVERAGE: Durchschnittswerte über die jeweilige Zeitspanne.
+	•	MIN: Minimalwerte (kleinste Messwerte pro Intervall).
+	•	MAX: Maximalwerte (größte Messwerte pro Intervall).
+	•	Jede Zeitreihe (z.B. 7 Tage mit 1 Minute Auflösung) ist jetzt 3-fach vorhanden, um AVERAGE, MIN und MAX zu speichern.
+
+⸻
+
+Dateigröße beachten
+
+Durch die zusätzlichen RRAs wird die RRD-Datei ca. 3× größer als mit nur AVERAGE.
+Falls du mehrere DS (Datenquellen) hast, skaliert die Größe entsprechend.
+
+# -------------------------------------------------------------------------------                      
+Hier sind die vollständigen rrdtool create-Befehle für 3 und 4 Datenquellen (DS) mit den gewünschten 7 Zeitintervallen (7 Tage bis 10 Jahre) und jeweils AVERAGE, MIN, MAX.
+
+rrdtool create mydata_3ds.rrd \
+  --step 60 \
+  DS:ds0:GAUGE:120:U:U \
+  DS:ds1:GAUGE:120:U:U \
+  DS:ds2:GAUGE:120:U:U \
+  \
+  RRA:AVERAGE:0.5:1:10080 \
+  RRA:AVERAGE:0.5:5:8640 \
+  RRA:AVERAGE:0.5:15:8640 \
+  RRA:AVERAGE:0.5:60:8760 \
+  RRA:AVERAGE:0.5:120:8760 \
+  RRA:AVERAGE:0.5:240:6570 \
+  RRA:AVERAGE:0.5:360:5840 \
+  RRA:AVERAGE:0.5:720:3650 \
+  \
+  RRA:MIN:0.5:1:10080 \
+  RRA:MIN:0.5:5:8640 \
+  RRA:MIN:0.5:15:8640 \
+  RRA:MIN:0.5:60:8760 \
+  RRA:MIN:0.5:120:8760 \
+  RRA:MIN:0.5:240:6570 \
+  RRA:MIN:0.5:360:5840 \
+  RRA:MIN:0.5:720:3650 \
+  \
+  RRA:MAX:0.5:1:10080 \
+  RRA:MAX:0.5:5:8640 \
+  RRA:MAX:0.5:15:8640 \
+  RRA:MAX:0.5:60:8760 \
+  RRA:MAX:0.5:120:8760 \
+  RRA:MAX:0.5:240:6570 \
+  RRA:MAX:0.5:360:5840 \
+  RRA:MAX:0.5:720:3650 
+  -------------------------------------------------------------------------------                      
+  rrdtool create mydata_4ds.rrd \
+  --step 60 \
+  DS:ds0:GAUGE:120:U:U \
+  DS:ds1:GAUGE:120:U:U \
+  DS:ds2:GAUGE:120:U:U \
+  DS:ds3:GAUGE:120:U:U \
+  \
+  RRA:AVERAGE:0.5:1:10080 \
+  RRA:AVERAGE:0.5:5:8640 \
+  RRA:AVERAGE:0.5:15:8640 \
+  RRA:AVERAGE:0.5:60:8760 \
+  RRA:AVERAGE:0.5:120:8760 \
+  RRA:AVERAGE:0.5:240:6570 \
+  RRA:AVERAGE:0.5:360:5840 \
+  RRA:AVERAGE:0.5:720:3650 \
+  \
+  RRA:MIN:0.5:1:10080 \
+  RRA:MIN:0.5:5:8640 \
+  RRA:MIN:0.5:15:8640 \
+  RRA:MIN:0.5:60:8760 \
+  RRA:MIN:0.5:120:8760 \
+  RRA:MIN:0.5:240:6570 \
+  RRA:MIN:0.5:360:5840 \
+  RRA:MIN:0.5:720:3650 \
+  \
+  RRA:MAX:0.5:1:10080 \
+  RRA:MAX:0.5:5:8640 \
+  RRA:MAX:0.5:15:8640 \
+  RRA:MAX:0.5:60:8760 \
+  RRA:MAX:0.5:120:8760 \
+  RRA:MAX:0.5:240:6570 \
+  RRA:MAX:0.5:360:5840 \
+  RRA:MAX:0.5:720:3650 
+# -------------------------------------------------------------------------------                      
+Hier ist eine kompakte Tabelle der RRA-Aufbewahrungszeiten mit Anzahl der Datenpunkte, um einen Überblick zu geben, wie viele Werte gespeichert werden und wie lange die Historie reicht. Ich zeige die Berechnung für 1 DS, und dann, wie es sich für 3 und 4 DS skaliert.
+
+⸻
+
+RRA-Aufbewahrungszeiten (bei --step 60)
+Nr.     RRA (Schrittweite)      Zeit pro PDP      Anzahl Rows     Aufbewahrung (Tage)     Aufbewahrung (Jahre)
+1               1                  1 Min            10,080            7 Tage                  0,019 Jahr
+2               5                  5 Min            8,640             30 Tage                 0,082 Jahr
+3               15                 15 Min           8,640             90 Tage                 0,246 Jahr
+4               60                 1 Stunde         8,760             365 Tage                1 Jahr
+5               120                2 Stunden        8,760             730 Tage                2 Jahre
+6               240                4 Stunden        6,570             1.095 Tage              3 Jahre
+7               360                6 Stunden        5,840             1.460 Tage              4 Jahre
+8               720               12 Stunden        3,650             1.825 Tage              5 Jahre
+9               1440              24 Stunden        18,250            3.650 Tage              10 Jahre
+
+Gesamtanzahl Datenpunkte (1 DS)
+	•	Pro RRA (AVERAGE, MIN, MAX) = Summe aller Rows =
+10,080 + 8,640 + 8,640 + 8,760 + 8,760 + 6,570 + 5,840 + 3,650 + 18,250
+= 79,190 Werte pro RRA-Typ
+	•	Für 1 DS (mit AVERAGE + MIN + MAX) =
+79,190 × 3 = 237,570 Werte
+Speicher ≈ 237,570 × 8 Byte ≈ 1,9 MB
+
+⸻
+
+Für 3 DS
+	•	Werte = 237,570 × 3 = 712,710 Werte
+	•	Speicher ≈ 5,7 MB
+
+⸻
+
+Für 4 DS
+	•	Werte = 237,570 × 4 = 950,280 Werte
+	•	Speicher ≈ 7,6 MB
+# -------------------------------------------------------------------------------                      
+wenn ich nun statt GAUGE COUNTER haben möchte brauch ich dann nur die Wörter austauschen?
+
+Fast – ja, du kannst einfach GAUGE durch COUNTER ersetzen, aber es gibt ein paar Dinge zu beachten:
+
+⸻
+
+Unterschied GAUGE vs. COUNTER
+	•	GAUGE:
+Speichert den exakten Wert, der gemessen wird (z. B. Temperatur, CPU-Last).
+Beispiel: 25.3°C wird direkt eingetragen.
+	•	COUNTER:
+Speichert die Differenz seit dem letzten Update. Wird typischerweise für Zähler wie Netzwerkbytes oder Energiezähler genutzt, die nur hochzählen.
+Beispiel: Wenn ein Zähler von 100 auf 110 steigt, wird 10 eingetragen (die Differenz).
+
+⸻
+
+Was du anpassen musst:
+DS:verbrauch:COUNTER:120:0:U
+2.	Min-Wert sollte meistens 0 sein**, da ein Zähler nicht negativ wird.
+Bei GAUGE könnte -40 bis +80 (z. B. Temperatur) Sinn machen, bei COUNTER nicht.
+3.	Falls der Zähler überläuft (Wraparound), behandelt RRDTool dies automatisch korrekt.
+
+⸻
+
+Beispiel:
+DS:temp0:GAUGE:1200:-40:80
+wird zu COUNTER:
+DS:bytes_in:COUNTER:120:0:U
+
+1. Für 3 DS (COUNTER)
+rrdtool create mydata_3ds_counter.rrd \
+--step 60 \
+DS:ds0:COUNTER:120:0:U \
+DS:ds1:COUNTER:120:0:U \
+DS:ds2:COUNTER:120:0:U \
+RRA:AVERAGE:0.5:1:10080 \
+RRA:AVERAGE:0.5:5:8640 \
+RRA:AVERAGE:0.5:15:8640 \
+RRA:AVERAGE:0.5:60:8760 \
+RRA:AVERAGE:0.5:120:8760 \
+RRA:AVERAGE:0.5:240:6570 \
+RRA:AVERAGE:0.5:360:5840 \
+RRA:AVERAGE:0.5:720:3650 \
+RRA:AVERAGE:0.5:1440:3650 \
+RRA:AVERAGE:0.5:2880:3650 \
+RRA:AVERAGE:0.5:4320:3650 \
+RRA:AVERAGE:0.5:5760:3650 \
+RRA:AVERAGE:0.5:7200:3650
+
+2. Für 4 DS (COUNTER)
+rrdtool create mydata_4ds_counter.rrd \
+--step 60 \
+DS:ds0:COUNTER:120:0:U \
+DS:ds1:COUNTER:120:0:U \
+DS:ds2:COUNTER:120:0:U \
+DS:ds3:COUNTER:120:0:U \
+RRA:AVERAGE:0.5:1:10080 \
+RRA:AVERAGE:0.5:5:8640 \
+RRA:AVERAGE:0.5:15:8640 \
+RRA:AVERAGE:0.5:60:8760 \
+RRA:AVERAGE:0.5:120:8760 \
+RRA:AVERAGE:0.5:240:6570 \
+RRA:AVERAGE:0.5:360:5840 \
+RRA:AVERAGE:0.5:720:3650 \
+RRA:AVERAGE:0.5:1440:3650 \
+RRA:AVERAGE:0.5:2880:3650 \
+RRA:AVERAGE:0.5:4320:3650 \
+RRA:AVERAGE:0.5:5760:3650 \
+RRA:AVERAGE:0.5:7200:3650
+
+# -------------------------------------------------------------------------------                      
+
+um den heartbeat zu ändern kann ich die gleichen create-befehle verwenden und muss lediglich --step entsprechend ändern, richtig?
+Fast – --step und minimal_heartbeat sind zwei verschiedene Parameter:
+	1.	--step
+	•	Gibt an, in welchem Intervall (in Sekunden) die Daten in die RRD-Datenbank geschrieben werden sollen.
+	•	Beispiel: --step 60 bedeutet, dass alle 60 Sekunden ein Wert erwartet wird.
+	2.	minimal_heartbeat
+	•	Wird in jeder DS:-Definition angegeben (z. B. DS:ds0:COUNTER:120:0:U).
+	•	Definiert, wie lange (in Sekunden) die RRD „ohne neuen Wert“ wartet, bevor der Datensatz als unknown (NaN) markiert wird.
+	•	Typisch ist das 2×Step, z. B. bei --step 60 → minimal_heartbeat 120.
+
+⸻
+
+Antwort auf deine Frage
+	•	Wenn du nur den Heartbeat ändern möchtest, reicht es nicht, nur --step anzupassen.
+	•	Du musst auch den minimal_heartbeat-Wert in jeder DS:-Zeile ändern, wenn er nicht mehr passen sollte.
+
+⸻
+
+Beispiel:
+
+Wenn du von 60 Sekunden auf 300 Sekunden gehen willst:
+rrdtool create test.rrd \
+--step 300 \
+DS:ds0:COUNTER:600:0:U \
+RRA:AVERAGE:0.5:1:10080
+
+	•	--step 300: Daten alle 5 Minuten.
+	•	600 (Heartbeat): Wenn 10 Minuten lang kein Wert kommt, wird NaN eingetragen.
+# -------------------------------------------------------------------------------                      
+rrdtool create for eth, backup and samba:
+rrdtool create XXXXXXX.rrd --step 60 DS:chan0:COUNTER:120:U:U DS:chan1:COUNTER:120:U:U RRA:AVERAGE:0.5:1:2160 RRA:AVERAGE:0.5:5:2016 RRA:AVERAGE:0.5:15:2880 RRA:AVERAGE:0.5:60:87600 RRA:MAX:0.5:1:2160 RRA:MAX:0.5:5:2016 RRA:MAX:0.5:15:2880 RRA:MAX:0.5:60:87600
+
+# -------------------------------------------------------------------------------                      
+# -------------------------------------------------------------------------------                      
+# -------------------------------------------------------------------------------                      
+RRD-Datei: eth0.rrd
+Step (Grundauflösung): 60 Sekunden
+-------------------------------------
+RRA | PDP/Row | Rows   | Zeitraum
+0   | 1       | 2160   | 1 Tage (AVERAGE)
+1   | 5       | 2016   | 7 Tage (AVERAGE)
+2   | 15      | 2880   | 30 Tage (AVERAGE)
+3   | 60      | 87600  | 3650 Tage (AVERAGE)
+4   | 1       | 2160   | 1 Tage (MAX)
+5   | 5       | 2016   | 7 Tage (MAX)
+6   | 15      | 2880   | 30 Tage (MAX)
+7   | 60      | 87600  | 3650 Tage (MAX)
+filename = "eth0.rrd"
+rrd_version = "0003"
+step = 60
+last_update = 1753192244
+header_size = 2912
+ds[chan0].index = 0
+ds[chan0].type = "COUNTER"
+ds[chan0].minimal_heartbeat = 120
+ds[chan0].min = NaN
+ds[chan0].max = NaN
+ds[chan0].last_ds = "3396033966"
+ds[chan0].value = 2.3784406270e+04
+ds[chan0].unknown_sec = 0
+ds[chan1].index = 1
+ds[chan1].type = "COUNTER"
+ds[chan1].minimal_heartbeat = 120
+ds[chan1].min = NaN
+ds[chan1].max = NaN
+ds[chan1].last_ds = "21261680274"
+ds[chan1].value = 7.0234755254e+04
+ds[chan1].unknown_sec = 0
+rra[0].cf = "AVERAGE"
+rra[0].rows = 2160
+rra[0].cur_row = 667
+rra[0].pdp_per_row = 1
+rra[0].xff = 5.0000000000e-01
+rra[0].cdp_prep[0].value = NaN
+rra[0].cdp_prep[0].unknown_datapoints = 0
+rra[0].cdp_prep[1].value = NaN
+rra[0].cdp_prep[1].unknown_datapoints = 0
+rra[1].cf = "AVERAGE"
+rra[1].rows = 2016
+rra[1].cur_row = 1717
+rra[1].pdp_per_row = 5
+rra[1].xff = 5.0000000000e-01
+rra[1].cdp_prep[0].value = 0.0000000000e+00
+rra[1].cdp_prep[0].unknown_datapoints = 0
+rra[1].cdp_prep[1].value = 0.0000000000e+00
+rra[1].cdp_prep[1].unknown_datapoints = 0
+rra[2].cf = "AVERAGE"
+rra[2].rows = 2880
+rra[2].cur_row = 2606
+rra[2].pdp_per_row = 15
+rra[2].xff = 5.0000000000e-01
+rra[2].cdp_prep[0].value = 2.6514487876e+03
+rra[2].cdp_prep[0].unknown_datapoints = 0
+rra[2].cdp_prep[1].value = 8.1451677516e+03
+rra[2].cdp_prep[1].unknown_datapoints = 0
+rra[3].cf = "AVERAGE"
+rra[3].rows = 87600
+rra[3].cur_row = 57637
+rra[3].pdp_per_row = 60
+rra[3].xff = 5.0000000000e-01
+rra[3].cdp_prep[0].value = 1.3011918927e+06
+rra[3].cdp_prep[0].unknown_datapoints = 0
+rra[3].cdp_prep[1].value = 2.4884701400e+08
+rra[3].cdp_prep[1].unknown_datapoints = 0
+rra[4].cf = "MAX"
+rra[4].rows = 2160
+rra[4].cur_row = 532
+rra[4].pdp_per_row = 1
+rra[4].xff = 5.0000000000e-01
+rra[4].cdp_prep[0].value = NaN
+rra[4].cdp_prep[0].unknown_datapoints = 0
+rra[4].cdp_prep[1].value = NaN
+rra[4].cdp_prep[1].unknown_datapoints = 0
+rra[5].cf = "MAX"
+rra[5].rows = 2016
+rra[5].cur_row = 982
+rra[5].pdp_per_row = 5
+rra[5].xff = 5.0000000000e-01
+rra[5].cdp_prep[0].value = -inf
+rra[5].cdp_prep[0].unknown_datapoints = 0
+rra[5].cdp_prep[1].value = -inf
+rra[5].cdp_prep[1].unknown_datapoints = 0
+rra[6].cf = "MAX"
+rra[6].rows = 2880
+rra[6].cur_row = 1074
+rra[6].pdp_per_row = 15
+rra[6].xff = 5.0000000000e-01
+rra[6].cdp_prep[0].value = 6.0484846585e+02
+rra[6].cdp_prep[0].unknown_datapoints = 0
+rra[6].cdp_prep[1].value = 1.9683439798e+03
+rra[6].cdp_prep[1].unknown_datapoints = 0
+rra[7].cf = "MAX"
+rra[7].rows = 87600
+rra[7].cur_row = 85629
+rra[7].pdp_per_row = 60
+rra[7].xff = 5.0000000000e-01
+rra[7].cdp_prep[0].value = 1.4417254030e+05
+rra[7].cdp_prep[0].unknown_datapoints = 0
+rra[7].cdp_prep[1].value = 4.4054951201e+07
+rra[7].cdp_prep[1].unknown_datapoints = 0
+# -------------------------------------------------------------------------------
+
+RRD-Datei: Buero-68C63A87FACE.rrd
+Step (Grundauflösung): 900 Sekunden
+-------------------------------------
+RRA | PDP/Row | Rows   | Zeitraum
+0   | 1       | 3600   | 37 Tage (AVERAGE)
+1   | 96      | 3600   | 3600 Tage (MIN)
+2   | 96      | 3600   | 3600 Tage (MAX)
+3   | 96      | 3600   | 3600 Tage (AVERAGE)
+filename = "Buero-68C63A87FACE.rrd"
+rrd_version = "0003"
+step = 900
+last_update = 1753191896
+header_size = 2312
+ds[temp0].index = 0
+ds[temp0].type = "GAUGE"
+ds[temp0].minimal_heartbeat = 1200
+ds[temp0].min = -4.0000000000e+01
+ds[temp0].max = 8.0000000000e+01
+ds[temp0].last_ds = "23.56"
+ds[temp0].value = 2.1118191205e+04
+ds[temp0].unknown_sec = 0
+ds[temp1].index = 1
+ds[temp1].type = "GAUGE"
+ds[temp1].minimal_heartbeat = 1200
+ds[temp1].min = -4.0000000000e+01
+ds[temp1].max = 8.0000000000e+01
+ds[temp1].last_ds = "23.06"
+ds[temp1].value = 2.0670012275e+04
+ds[temp1].unknown_sec = 0
+ds[temp2].index = 2
+ds[temp2].type = "GAUGE"
+ds[temp2].minimal_heartbeat = 1200
+ds[temp2].min = -4.0000000000e+01
+ds[temp2].max = 8.0000000000e+01
+ds[temp2].last_ds = "20.23"
+ds[temp2].value = 1.8686996682e+04
+ds[temp2].unknown_sec = 0
+rra[0].cf = "AVERAGE"
+rra[0].rows = 3600
+rra[0].cur_row = 2121
+rra[0].pdp_per_row = 1
+rra[0].xff = 5.0000000000e-01
+rra[0].cdp_prep[0].value = NaN
+rra[0].cdp_prep[0].unknown_datapoints = 0
+rra[0].cdp_prep[1].value = NaN
+rra[0].cdp_prep[1].unknown_datapoints = 0
+rra[0].cdp_prep[2].value = NaN
+rra[0].cdp_prep[2].unknown_datapoints = 0
+rra[1].cf = "MIN"
+rra[1].rows = 3600
+rra[1].cur_row = 2902
+rra[1].pdp_per_row = 96
+rra[1].xff = 5.0000000000e-01
+rra[1].cdp_prep[0].value = 2.2540334316e+01
+rra[1].cdp_prep[0].unknown_datapoints = 0
+rra[1].cdp_prep[1].value = 2.2750000000e+01
+rra[1].cdp_prep[1].unknown_datapoints = 0
+rra[1].cdp_prep[2].value = 1.5451777135e+01
+rra[1].cdp_prep[2].unknown_datapoints = 0
+rra[2].cf = "MAX"
+rra[2].rows = 3600
+rra[2].cur_row = 16
+rra[2].pdp_per_row = 96
+rra[2].xff = 5.0000000000e-01
+rra[2].cdp_prep[0].value = 2.3750625847e+01
+rra[2].cdp_prep[0].unknown_datapoints = 0
+rra[2].cdp_prep[1].value = 2.3269647411e+01
+rra[2].cdp_prep[1].unknown_datapoints = 0
+rra[2].cdp_prep[2].value = 2.1258253162e+01
+rra[2].cdp_prep[2].unknown_datapoints = 0
+rra[3].cf = "AVERAGE"
+rra[3].rows = 3600
+rra[3].cur_row = 199
+rra[3].pdp_per_row = 96
+rra[3].xff = 5.0000000000e-01
+rra[3].cdp_prep[0].value = 1.2403895425e+03
+rra[3].cdp_prep[0].unknown_datapoints = 0
+rra[3].cdp_prep[1].value = 1.2378717690e+03
+rra[3].cdp_prep[1].unknown_datapoints = 0
+rra[3].cdp_prep[2].value = 9.7892811697e+02
+rra[3].cdp_prep[2].unknown_datapoints = 0
+# -------------------------------------------------------------------------------
+  500 -rwxrwx---  1 pi pi   509024 Jul 20 14:52 backuptraf.rrd              # 
+  RRD-Datei: backuptraf.rrd
+Step (Grundauflösung): 60 Sekunden
+-------------------------------------
+RRA | PDP/Row | Rows   | Zeitraum
+0   | 1       | 2160   | 1 Tage (AVERAGE)
+1   | 5       | 2016   | 7 Tage (AVERAGE)
+2   | 15      | 2880   | 30 Tage (AVERAGE)
+3   | 60      | 8760   | 365 Tage (AVERAGE)
+4   | 1       | 2160   | 1 Tage (MAX)
+5   | 5       | 2016   | 7 Tage (MAX)
+6   | 15      | 2880   | 30 Tage (MAX)
+7   | 60      | 8760   | 365 Tage (MAX)
+
+filename = "backuptraf.rrd"
+rrd_version = "0003"
+step = 60
+last_update = 1753016213
+header_size = 2912
+ds[sdaw].index = 0
+ds[sdaw].type = "COUNTER"
+ds[sdaw].minimal_heartbeat = 120
+ds[sdaw].min = 0.0000000000e+00
+ds[sdaw].max = NaN
+ds[sdaw].last_ds = "460714"
+ds[sdaw].value = 0.0000000000e+00
+ds[sdaw].unknown_sec = 0
+ds[sdar].index = 1
+ds[sdar].type = "COUNTER"
+ds[sdar].minimal_heartbeat = 120
+ds[sdar].min = 0.0000000000e+00
+ds[sdar].max = NaN
+ds[sdar].last_ds = "37933176"
+ds[sdar].value = 0.0000000000e+00
+ds[sdar].unknown_sec = 0
+rra[0].cf = "AVERAGE"
+rra[0].rows = 2160
+rra[0].cur_row = 497
+rra[0].pdp_per_row = 1
+rra[0].xff = 5.0000000000e-01
+rra[0].cdp_prep[0].value = NaN
+rra[0].cdp_prep[0].unknown_datapoints = 0
+rra[0].cdp_prep[1].value = NaN
+rra[0].cdp_prep[1].unknown_datapoints = 0
+rra[1].cf = "AVERAGE"
+rra[1].rows = 2016
+rra[1].cur_row = 1510
+rra[1].pdp_per_row = 5
+rra[1].xff = 5.0000000000e-01
+rra[1].cdp_prep[0].value = 0.0000000000e+00
+rra[1].cdp_prep[0].unknown_datapoints = 0
+rra[1].cdp_prep[1].value = 0.0000000000e+00
+rra[1].cdp_prep[1].unknown_datapoints = 0
+rra[2].cf = "AVERAGE"
+rra[2].rows = 2880
+rra[2].cur_row = 699
+rra[2].pdp_per_row = 15
+rra[2].xff = 5.0000000000e-01
+rra[2].cdp_prep[0].value = 0.0000000000e+00
+rra[2].cdp_prep[0].unknown_datapoints = 0
+rra[2].cdp_prep[1].value = 0.0000000000e+00
+rra[2].cdp_prep[1].unknown_datapoints = 0
+rra[3].cf = "AVERAGE"
+rra[3].rows = 8760
+rra[3].cur_row = 725
+rra[3].pdp_per_row = 60
+rra[3].xff = 5.0000000000e-01
+rra[3].cdp_prep[0].value = 0.0000000000e+00
+rra[3].cdp_prep[0].unknown_datapoints = 0
+rra[3].cdp_prep[1].value = 0.0000000000e+00
+rra[3].cdp_prep[1].unknown_datapoints = 0
+rra[4].cf = "MAX"
+rra[4].rows = 2160
+rra[4].cur_row = 1424
+rra[4].pdp_per_row = 1
+rra[4].xff = 5.0000000000e-01
+rra[4].cdp_prep[0].value = NaN
+rra[4].cdp_prep[0].unknown_datapoints = 0
+rra[4].cdp_prep[1].value = NaN
+rra[4].cdp_prep[1].unknown_datapoints = 0
+rra[5].cf = "MAX"
+rra[5].rows = 2016
+rra[5].cur_row = 185
+rra[5].pdp_per_row = 5
+rra[5].xff = 5.0000000000e-01
+rra[5].cdp_prep[0].value = 0.0000000000e+00
+rra[5].cdp_prep[0].unknown_datapoints = 0
+rra[5].cdp_prep[1].value = 0.0000000000e+00
+rra[5].cdp_prep[1].unknown_datapoints = 0
+rra[6].cf = "MAX"
+rra[6].rows = 2880
+rra[6].cur_row = 1870
+rra[6].pdp_per_row = 15
+rra[6].xff = 5.0000000000e-01
+rra[6].cdp_prep[0].value = 0.0000000000e+00
+rra[6].cdp_prep[0].unknown_datapoints = 0
+rra[6].cdp_prep[1].value = 0.0000000000e+00
+rra[6].cdp_prep[1].unknown_datapoints = 0
+rra[7].cf = "MAX"
+rra[7].rows = 8760
+rra[7].cur_row = 8338
+rra[7].pdp_per_row = 60
+rra[7].xff = 5.0000000000e-01
+rra[7].cdp_prep[0].value = 0.0000000000e+00
+rra[7].cdp_prep[0].unknown_datapoints = 0
+rra[7].cdp_prep[1].value = 0.0000000000e+00
+rra[7].cdp_prep[1].unknown_datapoints = 0
+# -------------------------------------------------------------------------------
+  376 -rwxrwx---  1 pi pi   382456 Jul 20 14:52 coretemp.rrd        #
+  RRD-Datei: coretemp.rrd
+Step (Grundauflösung): 60 Sekunden
+-------------------------------------
+RRA | PDP/Row | Rows   | Zeitraum
+0   | 1       | 2160   | 1 Tage (AVERAGE)
+1   | 5       | 2016   | 7 Tage (AVERAGE)
+2   | 15      | 2880   | 30 Tage (AVERAGE)
+3   | 60      | 8760   | 365 Tage (AVERAGE)
+4   | 1       | 2160   | 1 Tage (MIN)
+5   | 5       | 2016   | 7 Tage (MIN)
+6   | 15      | 2880   | 30 Tage (MIN)
+7   | 60      | 8760   | 365 Tage (MIN)
+8   | 1       | 2160   | 1 Tage (MAX)
+9   | 5       | 2016   | 7 Tage (MAX)
+10  | 15      | 2880   | 30 Tage (MAX)
+11  | 60      | 8760   | 365 Tage (MAX)
+filename = "coretemp.rrd"
+rrd_version = "0003"
+step = 60
+last_update = 1753016441
+header_size = 2872
+ds[core].index = 0
+ds[core].type = "GAUGE"
+ds[core].minimal_heartbeat = 120
+ds[core].min = NaN
+ds[core].max = NaN
+ds[core].last_ds = "43.3"
+ds[core].value = 1.7855791225e+03
+ds[core].unknown_sec = 0
+rra[0].cf = "AVERAGE"
+rra[0].rows = 2160
+rra[0].cur_row = 1379
+rra[0].pdp_per_row = 1
+rra[0].xff = 5.0000000000e-01
+rra[0].cdp_prep[0].value = NaN
+rra[0].cdp_prep[0].unknown_datapoints = 0
+rra[1].cf = "AVERAGE"
+rra[1].rows = 2016
+rra[1].cur_row = 2014
+rra[1].pdp_per_row = 5
+rra[1].xff = 5.0000000000e-01
+rra[1].cdp_prep[0].value = 0.0000000000e+00
+rra[1].cdp_prep[0].unknown_datapoints = 0
+rra[2].cf = "AVERAGE"
+rra[2].rows = 2880
+rra[2].cur_row = 2631
+rra[2].pdp_per_row = 15
+rra[2].xff = 5.0000000000e-01
+rra[2].cdp_prep[0].value = 0.0000000000e+00
+rra[2].cdp_prep[0].unknown_datapoints = 0
+rra[3].cf = "AVERAGE"
+rra[3].rows = 8760
+rra[3].cur_row = 4578
+rra[3].pdp_per_row = 60
+rra[3].xff = 5.0000000000e-01
+rra[3].cdp_prep[0].value = 0.0000000000e+00
+rra[3].cdp_prep[0].unknown_datapoints = 0
+rra[4].cf = "MIN"
+rra[4].rows = 2160
+rra[4].cur_row = 234
+rra[4].pdp_per_row = 1
+rra[4].xff = 5.0000000000e-01
+rra[4].cdp_prep[0].value = NaN
+rra[4].cdp_prep[0].unknown_datapoints = 0
+rra[5].cf = "MIN"
+rra[5].rows = 2016
+rra[5].cur_row = 1613
+rra[5].pdp_per_row = 5
+rra[5].xff = 5.0000000000e-01
+rra[5].cdp_prep[0].value = inf
+rra[5].cdp_prep[0].unknown_datapoints = 0
+rra[6].cf = "MIN"
+rra[6].rows = 2880
+rra[6].cur_row = 2032
+rra[6].pdp_per_row = 15
+rra[6].xff = 5.0000000000e-01
+rra[6].cdp_prep[0].value = inf
+rra[6].cdp_prep[0].unknown_datapoints = 0
+rra[7].cf = "MIN"
+rra[7].rows = 8760
+rra[7].cur_row = 2225
+rra[7].pdp_per_row = 60
+rra[7].xff = 5.0000000000e-01
+rra[7].cdp_prep[0].value = inf
+rra[7].cdp_prep[0].unknown_datapoints = 0
+rra[8].cf = "MAX"
+rra[8].rows = 2160
+rra[8].cur_row = 1839
+rra[8].pdp_per_row = 1
+rra[8].xff = 5.0000000000e-01
+rra[8].cdp_prep[0].value = NaN
+rra[8].cdp_prep[0].unknown_datapoints = 0
+rra[9].cf = "MAX"
+rra[9].rows = 2016
+rra[9].cur_row = 488
+rra[9].pdp_per_row = 5
+rra[9].xff = 5.0000000000e-01
+rra[9].cdp_prep[0].value = -inf
+rra[9].cdp_prep[0].unknown_datapoints = 0
+rra[10].cf = "MAX"
+rra[10].rows = 2880
+rra[10].cur_row = 2191
+rra[10].pdp_per_row = 15
+rra[10].xff = 5.0000000000e-01
+rra[10].cdp_prep[0].value = -inf
+rra[10].cdp_prep[0].unknown_datapoints = 0
+rra[11].cf = "MAX"
+rra[11].rows = 8760
+rra[11].cur_row = 969
+rra[11].pdp_per_row = 60
+rra[11].xff = 5.0000000000e-01
+rra[11].cdp_prep[0].value = -inf
+rra[11].cdp_prep[0].unknown_datapoints = 0
+# -------------------------------------------------------------------------------
+  228 -rwxrwx---  1 pi pi   232160 Jul 20 14:52 cpu.rrd         #
+RRD-Datei: cpu.rrd
+Step (Grundauflösung): 900 Sekunden
+-------------------------------------
+RRA | PDP/Row | Rows   | Zeitraum
+0   | 1       | 3600   | 37 Tage (AVERAGE)
+1   | 96      | 3600   | 3600 Tage (MIN)
+2   | 96      | 3600   | 3600 Tage (MAX)
+3   | 96      | 3600   | 3600 Tage (AVERAGE)
+filename = "cpu.rrd"
+rrd_version = "0003"
+step = 900
+last_update = 1753016539
+header_size = 1760
+ds[ch0].index = 0
+ds[ch0].type = "GAUGE"
+ds[ch0].minimal_heartbeat = 1200
+ds[ch0].min = -4.0000000000e+01
+ds[ch0].max = 1.1000000000e+02
+ds[ch0].last_ds = "42.45"
+ds[ch0].value = 5.9873410776e+03
+ds[ch0].unknown_sec = 0
+ds[ch1].index = 1
+ds[ch1].type = "GAUGE"
+ds[ch1].minimal_heartbeat = 1200
+ds[ch1].min = -4.0000000000e+01
+ds[ch1].max = 1.1000000000e+02
+ds[ch1].last_ds = "0.19921875"
+ds[ch1].value = 2.6670780096e+01
+ds[ch1].unknown_sec = 0
+rra[0].cf = "AVERAGE"
+rra[0].rows = 3600
+rra[0].cur_row = 3408
+rra[0].pdp_per_row = 1
+rra[0].xff = 5.0000000000e-01
+rra[0].cdp_prep[0].value = NaN
+rra[0].cdp_prep[0].unknown_datapoints = 0
+rra[0].cdp_prep[1].value = NaN
+rra[0].cdp_prep[1].unknown_datapoints = 0
+rra[1].cf = "MIN"
+rra[1].rows = 3600
+rra[1].cur_row = 315
+rra[1].pdp_per_row = 96
+rra[1].xff = 5.0000000000e-01
+rra[1].cdp_prep[0].value = 4.0537159100e+01
+rra[1].cdp_prep[0].unknown_datapoints = 0
+rra[1].cdp_prep[1].value = 1.6175097318e-01
+rra[1].cdp_prep[1].unknown_datapoints = 0
+rra[2].cf = "MAX"
+rra[2].rows = 3600
+rra[2].cur_row = 1092
+rra[2].pdp_per_row = 96
+rra[2].xff = 5.0000000000e-01
+rra[2].cdp_prep[0].value = 4.2786802616e+01
+rra[2].cdp_prep[0].unknown_datapoints = 0
+rra[2].cdp_prep[1].value = 2.9577520724e-01
+rra[2].cdp_prep[1].unknown_datapoints = 0
+rra[3].cf = "AVERAGE"
+rra[3].rows = 3600
+rra[3].cur_row = 889
+rra[3].pdp_per_row = 96
+rra[3].xff = 5.0000000000e-01
+rra[3].cdp_prep[0].value = 2.1807736081e+03
+rra[3].cdp_prep[0].unknown_datapoints = 0
+rra[3].cdp_prep[1].value = 1.0660736463e+01
+rra[3].cdp_prep[1].unknown_datapoints = 0
+# -------------------------------------------------------------------------------  
+  376 -rwxrwx---  1 pi pi   381896 Jul 20 14:52 loadavg.rrd
+RRD-Datei: loadavg.rrd
+Step (Grundauflösung): 60 Sekunden
+-------------------------------------
+RRA | PDP/Row | Rows   | Zeitraum
+0   | 1       | 2160   | 1 Tage (AVERAGE)
+1   | 5       | 2016   | 7 Tage (AVERAGE)
+2   | 15      | 2880   | 30 Tage (AVERAGE)
+3   | 60      | 8760   | 365 Tage (AVERAGE)
+filename = "loadavg.rrd"
+rrd_version = "0003"
+step = 60
+last_update = 1753017365
+header_size = 2312
+ds[load1].index = 0
+ds[load1].type = "GAUGE"
+ds[load1].minimal_heartbeat = 120
+ds[load1].min = 0.0000000000e+00
+ds[load1].max = NaN
+ds[load1].last_ds = "0.25"
+ds[load1].value = 1.3748142100e+00
+ds[load1].unknown_sec = 0
+ds[load5].index = 1
+ds[load5].type = "GAUGE"
+ds[load5].minimal_heartbeat = 120
+ds[load5].min = 0.0000000000e+00
+ds[load5].max = NaN
+ds[load5].last_ds = "0.22"
+ds[load5].value = 1.1367111800e+00
+ds[load5].unknown_sec = 0
+ds[load15].index = 2
+ds[load15].type = "GAUGE"
+ds[load15].minimal_heartbeat = 120
+ds[load15].min = 0.0000000000e+00
+ds[load15].max = NaN
+ds[load15].last_ds = "0.19"
+ds[load15].value = 9.8170511000e-01
+ds[load15].unknown_sec = 0
+rra[0].cf = "AVERAGE"
+rra[0].rows = 2160
+rra[0].cur_row = 1482
+rra[0].pdp_per_row = 1
+rra[0].xff = 5.0000000000e-01
+rra[0].cdp_prep[0].value = NaN
+rra[0].cdp_prep[0].unknown_datapoints = 0
+rra[0].cdp_prep[1].value = NaN
+rra[0].cdp_prep[1].unknown_datapoints = 0
+rra[0].cdp_prep[2].value = NaN
+rra[0].cdp_prep[2].unknown_datapoints = 0
+rra[1].cf = "AVERAGE"
+rra[1].rows = 2016
+rra[1].cur_row = 1383
+rra[1].pdp_per_row = 5
+rra[1].xff = 5.0000000000e-01
+rra[1].cdp_prep[0].value = 1.9694116733e-01
+rra[1].cdp_prep[0].unknown_datapoints = 0
+rra[1].cdp_prep[1].value = 2.0750167317e-01
+rra[1].cdp_prep[1].unknown_datapoints = 0
+rra[1].cdp_prep[2].value = 1.8015069150e-01
+rra[1].cdp_prep[2].unknown_datapoints = 0
+rra[2].cf = "AVERAGE"
+rra[2].rows = 2880
+rra[2].cur_row = 2811
+rra[2].pdp_per_row = 15
+rra[2].xff = 5.0000000000e-01
+rra[2].cdp_prep[0].value = 1.9694116733e-01
+rra[2].cdp_prep[0].unknown_datapoints = 0
+rra[2].cdp_prep[1].value = 2.0750167317e-01
+rra[2].cdp_prep[1].unknown_datapoints = 0
+rra[2].cdp_prep[2].value = 1.8015069150e-01
+rra[2].cdp_prep[2].unknown_datapoints = 0
+rra[3].cf = "AVERAGE"
+rra[3].rows = 8760
+rra[3].cur_row = 5967
+rra[3].pdp_per_row = 60
+rra[3].xff = 5.0000000000e-01
+rra[3].cdp_prep[0].value = 3.7180003058e+00
+rra[3].cdp_prep[0].unknown_datapoints = 0
+rra[3].cdp_prep[1].value = 3.2344438597e+00
+rra[3].cdp_prep[1].unknown_datapoints = 0
+rra[3].cdp_prep[2].value = 2.9689450035e+00
+rra[3].cdp_prep[2].unknown_datapoints = 0
+# -------------------------------------------------------------------------------        
+69640 -rw-r--r--  1 pi pi 71307568 Jul 19 15:09 load.rrd
+RRD-Datei: load.rrd
+Step (Grundauflösung): 60 Sekunden
+-------------------------------------
+RRA | PDP/Row | Rows   | Zeitraum
+0   | 1       | 259200 | 180 Tage (AVERAGE)
+1   | 5       | 210240 | 730 Tage (AVERAGE)
+2   | 60      | 87600  | 3650 Tage (AVERAGE)
+3   | 1       | 259200 | 180 Tage (AVERAGE)
+4   | 5       | 210240 | 730 Tage (AVERAGE)
+5   | 60      | 87600  | 3650 Tage (AVERAGE)
+6   | 1       | 259200 | 180 Tage (AVERAGE)
+7   | 5       | 210240 | 730 Tage (AVERAGE)
+8   | 60      | 87600  | 3650 Tage (AVERAGE)
+9   | 1       | 259200 | 180 Tage (AVERAGE)
+10  | 5       | 210240 | 730 Tage (AVERAGE)
+11  | 60      | 87600  | 3650 Tage (AVERAGE)
+filename = "load.rrd"
+rrd_version = "0003"
+step = 60
+last_update = 1752930438
+header_size = 6448
+ds[chan0].index = 0
+ds[chan0].type = "GAUGE"
+ds[chan0].minimal_heartbeat = 120
+ds[chan0].min = NaN
+ds[chan0].max = NaN
+ds[chan0].last_ds = "U"
+ds[chan0].value = NaN
+ds[chan0].unknown_sec = 18
+ds[chan1].index = 1
+ds[chan1].type = "GAUGE"
+ds[chan1].minimal_heartbeat = 120
+ds[chan1].min = NaN
+ds[chan1].max = NaN
+ds[chan1].last_ds = "U"
+ds[chan1].value = NaN
+ds[chan1].unknown_sec = 18
+ds[chan2].index = 2
+ds[chan2].type = "GAUGE"
+ds[chan2].minimal_heartbeat = 120
+ds[chan2].min = NaN
+ds[chan2].max = NaN
+ds[chan2].last_ds = "U"
+ds[chan2].value = NaN
+ds[chan2].unknown_sec = 18
+ds[chan3].index = 3
+ds[chan3].type = "GAUGE"
+ds[chan3].minimal_heartbeat = 120
+ds[chan3].min = NaN
+ds[chan3].max = NaN
+ds[chan3].last_ds = "U"
+ds[chan3].value = NaN
+ds[chan3].unknown_sec = 18
+rra[0].cf = "AVERAGE"
+rra[0].rows = 259200
+rra[0].cur_row = 150485
+rra[0].pdp_per_row = 1
+rra[0].xff = 5.0000000000e-01
+rra[0].cdp_prep[0].value = NaN
+rra[0].cdp_prep[0].unknown_datapoints = 0
+rra[0].cdp_prep[1].value = NaN
+rra[0].cdp_prep[1].unknown_datapoints = 0
+rra[0].cdp_prep[2].value = NaN
+rra[0].cdp_prep[2].unknown_datapoints = 0
+rra[0].cdp_prep[3].value = NaN
+rra[0].cdp_prep[3].unknown_datapoints = 0
+rra[1].cf = "AVERAGE"
+rra[1].rows = 210240
+rra[1].cur_row = 135249
+rra[1].pdp_per_row = 5
+rra[1].xff = 5.0000000000e-01
+rra[1].cdp_prep[0].value = NaN
+rra[1].cdp_prep[0].unknown_datapoints = 2
+rra[1].cdp_prep[1].value = NaN
+rra[1].cdp_prep[1].unknown_datapoints = 2
+rra[1].cdp_prep[2].value = NaN
+rra[1].cdp_prep[2].unknown_datapoints = 2
+rra[1].cdp_prep[3].value = NaN
+rra[1].cdp_prep[3].unknown_datapoints = 2
+rra[2].cf = "AVERAGE"
+rra[2].rows = 87600
+rra[2].cur_row = 80558
+rra[2].pdp_per_row = 60
+rra[2].xff = 5.0000000000e-01
+rra[2].cdp_prep[0].value = NaN
+rra[2].cdp_prep[0].unknown_datapoints = 7
+rra[2].cdp_prep[1].value = NaN
+rra[2].cdp_prep[1].unknown_datapoints = 7
+rra[2].cdp_prep[2].value = NaN
+rra[2].cdp_prep[2].unknown_datapoints = 7
+rra[2].cdp_prep[3].value = NaN
+rra[2].cdp_prep[3].unknown_datapoints = 7
+rra[3].cf = "AVERAGE"
+rra[3].rows = 259200
+rra[3].cur_row = 204688
+rra[3].pdp_per_row = 1
+rra[3].xff = 5.0000000000e-01
+rra[3].cdp_prep[0].value = NaN
+rra[3].cdp_prep[0].unknown_datapoints = 0
+rra[3].cdp_prep[1].value = NaN
+rra[3].cdp_prep[1].unknown_datapoints = 0
+rra[3].cdp_prep[2].value = NaN
+rra[3].cdp_prep[2].unknown_datapoints = 0
+rra[3].cdp_prep[3].value = NaN
+rra[3].cdp_prep[3].unknown_datapoints = 0
+rra[4].cf = "AVERAGE"
+rra[4].rows = 210240
+rra[4].cur_row = 100652
+rra[4].pdp_per_row = 5
+rra[4].xff = 5.0000000000e-01
+rra[4].cdp_prep[0].value = NaN
+rra[4].cdp_prep[0].unknown_datapoints = 2
+rra[4].cdp_prep[1].value = NaN
+rra[4].cdp_prep[1].unknown_datapoints = 2
+rra[4].cdp_prep[2].value = NaN
+rra[4].cdp_prep[2].unknown_datapoints = 2
+rra[4].cdp_prep[3].value = NaN
+rra[4].cdp_prep[3].unknown_datapoints = 2
+rra[5].cf = "AVERAGE"
+rra[5].rows = 87600
+rra[5].cur_row = 12922
+rra[5].pdp_per_row = 60
+rra[5].xff = 5.0000000000e-01
+rra[5].cdp_prep[0].value = NaN
+rra[5].cdp_prep[0].unknown_datapoints = 7
+rra[5].cdp_prep[1].value = NaN
+rra[5].cdp_prep[1].unknown_datapoints = 7
+rra[5].cdp_prep[2].value = NaN
+rra[5].cdp_prep[2].unknown_datapoints = 7
+rra[5].cdp_prep[3].value = NaN
+rra[5].cdp_prep[3].unknown_datapoints = 7
+rra[6].cf = "AVERAGE"
+rra[6].rows = 259200
+rra[6].cur_row = 133748
+rra[6].pdp_per_row = 1
+rra[6].xff = 5.0000000000e-01
+rra[6].cdp_prep[0].value = NaN
+rra[6].cdp_prep[0].unknown_datapoints = 0
+rra[6].cdp_prep[1].value = NaN
+rra[6].cdp_prep[1].unknown_datapoints = 0
+rra[6].cdp_prep[2].value = NaN
+rra[6].cdp_prep[2].unknown_datapoints = 0
+rra[6].cdp_prep[3].value = NaN
+rra[6].cdp_prep[3].unknown_datapoints = 0
+rra[7].cf = "AVERAGE"
+rra[7].rows = 210240
+rra[7].cur_row = 56927
+rra[7].pdp_per_row = 5
+rra[7].xff = 5.0000000000e-01
+rra[7].cdp_prep[0].value = NaN
+rra[7].cdp_prep[0].unknown_datapoints = 2
+rra[7].cdp_prep[1].value = NaN
+rra[7].cdp_prep[1].unknown_datapoints = 2
+rra[7].cdp_prep[2].value = NaN
+rra[7].cdp_prep[2].unknown_datapoints = 2
+rra[7].cdp_prep[3].value = NaN
+rra[7].cdp_prep[3].unknown_datapoints = 2
+rra[8].cf = "AVERAGE"
+rra[8].rows = 87600
+rra[8].cur_row = 67483
+rra[8].pdp_per_row = 60
+rra[8].xff = 5.0000000000e-01
+rra[8].cdp_prep[0].value = NaN
+rra[8].cdp_prep[0].unknown_datapoints = 7
+rra[8].cdp_prep[1].value = NaN
+rra[8].cdp_prep[1].unknown_datapoints = 7
+rra[8].cdp_prep[2].value = NaN
+rra[8].cdp_prep[2].unknown_datapoints = 7
+rra[8].cdp_prep[3].value = NaN
+rra[8].cdp_prep[3].unknown_datapoints = 7
+rra[9].cf = "AVERAGE"
+rra[9].rows = 259200
+rra[9].cur_row = 30396
+rra[9].pdp_per_row = 1
+rra[9].xff = 5.0000000000e-01
+rra[9].cdp_prep[0].value = NaN
+rra[9].cdp_prep[0].unknown_datapoints = 0
+rra[9].cdp_prep[1].value = NaN
+rra[9].cdp_prep[1].unknown_datapoints = 0
+rra[9].cdp_prep[2].value = NaN
+rra[9].cdp_prep[2].unknown_datapoints = 0
+rra[9].cdp_prep[3].value = NaN
+rra[9].cdp_prep[3].unknown_datapoints = 0
+rra[10].cf = "AVERAGE"
+rra[10].rows = 210240
+rra[10].cur_row = 15181
+rra[10].pdp_per_row = 5
+rra[10].xff = 5.0000000000e-01
+rra[10].cdp_prep[0].value = NaN
+rra[10].cdp_prep[0].unknown_datapoints = 2
+rra[10].cdp_prep[1].value = NaN
+rra[10].cdp_prep[1].unknown_datapoints = 2
+rra[10].cdp_prep[2].value = NaN
+rra[10].cdp_prep[2].unknown_datapoints = 2
+rra[10].cdp_prep[3].value = NaN
+rra[10].cdp_prep[3].unknown_datapoints = 2
+rra[11].cf = "AVERAGE"
+rra[11].rows = 87600
+rra[11].cur_row = 68162
+rra[11].pdp_per_row = 60
+rra[11].xff = 5.0000000000e-01
+rra[11].cdp_prep[0].value = NaN
+rra[11].cdp_prep[0].unknown_datapoints = 7
+rra[11].cdp_prep[1].value = NaN
+rra[11].cdp_prep[1].unknown_datapoints = 7
+rra[11].cdp_prep[2].value = NaN
+rra[11].cdp_prep[2].unknown_datapoints = 7
+rra[11].cdp_prep[3].value = NaN
+rra[11].cdp_prep[3].unknown_datapoints = 7
+# -------------------------------------------------------------------------------        
+  252 -rwxrwx---  1 pi pi   254816 Jul 20 14:52 memory.rrd
+RRD-Datei: memory.rrd
+Step (Grundauflösung): 60 Sekunden
+-------------------------------------
+RRA | PDP/Row | Rows   | Zeitraum
+0   | 1       | 2160   | 1 Tage (AVERAGE)
+1   | 5       | 2016   | 7 Tage (AVERAGE)
+2   | 15      | 2880   | 30 Tage (AVERAGE)
+3   | 60      | 8760   | 365 Tage (AVERAGE)
+filename = "memory.rrd"
+rrd_version = "0003"
+step = 60
+last_update = 1753017520
+header_size = 1760
+ds[fram].index = 0
+ds[fram].type = "GAUGE"
+ds[fram].minimal_heartbeat = 120
+ds[fram].min = NaN
+ds[fram].max = NaN
+ds[fram].last_ds = "283392"
+ds[fram].value = 1.1521112831e+07
+ds[fram].unknown_sec = 0
+ds[fswap].index = 1
+ds[fswap].type = "GAUGE"
+ds[fswap].minimal_heartbeat = 120
+ds[fswap].min = NaN
+ds[fswap].max = NaN
+ds[fswap].last_ds = "272368"
+ds[fswap].value = 1.1142076447e+07
+ds[fswap].unknown_sec = 0
+rra[0].cf = "AVERAGE"
+rra[0].rows = 2160
+rra[0].cur_row = 1269
+rra[0].pdp_per_row = 1
+rra[0].xff = 5.0000000000e-01
+rra[0].cdp_prep[0].value = NaN
+rra[0].cdp_prep[0].unknown_datapoints = 0
+rra[0].cdp_prep[1].value = NaN
+rra[0].cdp_prep[1].unknown_datapoints = 0
+rra[1].cf = "AVERAGE"
+rra[1].rows = 2016
+rra[1].cur_row = 322
+rra[1].pdp_per_row = 5
+rra[1].xff = 5.0000000000e-01
+rra[1].cdp_prep[0].value = 8.4685264724e+05
+rra[1].cdp_prep[0].unknown_datapoints = 0
+rra[1].cdp_prep[1].value = 8.1710400000e+05
+rra[1].cdp_prep[1].unknown_datapoints = 0
+rra[2].cf = "AVERAGE"
+rra[2].rows = 2880
+rra[2].cur_row = 2074
+rra[2].pdp_per_row = 15
+rra[2].xff = 5.0000000000e-01
+rra[2].cdp_prep[0].value = 8.4685264724e+05
+rra[2].cdp_prep[0].unknown_datapoints = 0
+rra[2].cdp_prep[1].value = 8.1710400000e+05
+rra[2].cdp_prep[1].unknown_datapoints = 0
+rra[3].cf = "AVERAGE"
+rra[3].rows = 8760
+rra[3].cur_row = 5605
+rra[3].pdp_per_row = 60
+rra[3].xff = 5.0000000000e-01
+rra[3].cdp_prep[0].value = 5.1255738863e+06
+rra[3].cdp_prep[0].unknown_datapoints = 0
+rra[3].cdp_prep[1].value = 4.9026240000e+06
+rra[3].cdp_prep[1].unknown_datapoints = 0
+# -------------------------------------------------------------------------------          
+ 4356 -rwxrwx---  1 pi pi  4457320 Jul 20 14:52 shellyplug-083A8DF437C7.rrd
+RRD-Datei: shellyplug-083A8DF437C7.rrd
+Step (Grundauflösung): 60 Sekunden
+-------------------------------------
+RRA | PDP/Row | Rows   | Zeitraum
+0   | 1       | 259200 | 180 Tage (AVERAGE)
+1   | 5       | 210240 | 730 Tage (AVERAGE)
+2   | 60      | 87600  | 3650 Tage (AVERAGE)
+filename = "shellyplug-083A8DF437C7.rrd"
+rrd_version = "0003"
+step = 60
+last_update = 1753018081
+header_size = 1000
+ds[verbrauch].index = 0
+ds[verbrauch].type = "GAUGE"
+ds[verbrauch].minimal_heartbeat = 120
+ds[verbrauch].min = 0.0000000000e+00
+ds[verbrauch].max = NaN
+ds[verbrauch].last_ds = "111.8"
+ds[verbrauch].value = 1.8685011020e+02
+ds[verbrauch].unknown_sec = 0
+rra[0].cf = "AVERAGE"
+rra[0].rows = 259200
+rra[0].cur_row = 174785
+rra[0].pdp_per_row = 1
+rra[0].xff = 5.0000000000e-01
+rra[0].cdp_prep[0].value = NaN
+rra[0].cdp_prep[0].unknown_datapoints = 0
+rra[1].cf = "AVERAGE"
+rra[1].rows = 210240
+rra[1].cur_row = 198931
+rra[1].pdp_per_row = 5
+rra[1].xff = 5.0000000000e-01
+rra[1].cdp_prep[0].value = 3.4123154814e+02
+rra[1].cdp_prep[0].unknown_datapoints = 0
+rra[2].cf = "AVERAGE"
+rra[2].rows = 87600
+rra[2].cur_row = 86109
+rra[2].pdp_per_row = 60
+rra[2].xff = 5.0000000000e-01
+rra[2].cdp_prep[0].value = 3.2267867037e+03
+rra[2].cdp_prep[0].unknown_datapoints = 0
+# -------------------------------------------------------------------------------                      

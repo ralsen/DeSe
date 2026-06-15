@@ -1,0 +1,1044 @@
+
+
+#   Todos:
+#       -   updated DataSets: in Store DaBoStore: has the same value than Counter: in commons. thats funny. Is that correct, could that be done simpler?
+#       -   adding YML_FORMAT to Commons which also can be omitted. The YML-Files becomes the same function as the old xml-files in PHP. 
+#           YML_FORMAT has the option CUMULATE or SINGLE. can be omitted.
+#           !!! added this but e.g. same "uptime" comes 4 times when CUMULATE is set. why is in System.yml "__CPU Infos: '- - - - >'" and some more 
+#       -   adding YML_MODE with the same options as CSV_Mode
+#       -   __MERGE should be changed to - [__MERGE_TIME, get, [STORE, SHELF, BOX], [STORE, SHELF, BOX]] or something like that. 
+#           With this change we can access any value in any Datastore from any other Datastores and we can set separate times for any Merge
+#   
+#       - es gibt  eine Möglichkeit dictionarys mit einer Funktion/Methode auszustatten die Verwendet wird wenn ein Key nicht vorhanden ist
+#	      ueber die Verwendung von collections.defaultdict nachdenken
+
+###############################################################
+# call TASOMTIZER
+# ./Library/Python/3.9/bin/tasmotizer.py
+###############################################################
+
+#   _Common_keys_and_values_
+#   CSV_FORMAT:
+#       MULTI:
+#           csv-file with all declared values in one file
+#           file name: <StoreName>-<date>__<time>
+#       SINGLE:
+#           cvs-file(s), each for every declared value
+#           file name: <StoreName>_<ShelfName>_<MODE>-<date>__<time>
+#   __MERGE:
+#       Datastores with '__MERGE' are virtual Stores. 
+#       They dont receive Data from anywhere, they fetch data from sources in the list below '__MERGE'
+#           syntax: [operation, DataShelf in this Store, Store to merge with, Shelf in that Store, DataBox in that Shelf]
+#           operation can be:
+#           'get': get value from elsewhere and put it into this shelf
+#           'and': get bool values from the list of variables, do 'and'-function and put in the shelf
+#           'or': get bool values from the list of variables, do 'or'-function and put in the shelf
+#           'add': get values from the list of variables, do 'add'-function and put in the shelf
+#       !!! They have no associated real sending device !!!
+#       !!! consider they must be build _after all other_ (real) stores are build !!!
+#
+#   FILLED_UP:  
+#       a Flag, if defined CSV_FORMATCSV-files have no empty columns (like ',,'). These gap(s) are filled with the latest known value(s)
+#       otherwise (if not defined) there are gap(s) if no current value is available
+#
+#   RELOAD_TIMEOUT:
+#       the reload count value to check if the Store is still alive 
+#       can be omitted
+#   
+#   TIMEOUT:
+#       the current timeout value. 
+#
+#   _keys and values for each DataShelf_
+#   RELOAD_CNT:
+#       the reload count value for MODE = COUNT and MODE = AVR
+#       can be omitted for other modes
+#   CNT:
+#       the current count value. 
+#   MODES: 
+#      NONE: 
+#         dont care for this signal
+#      CHANGE:
+#           only value changes are stored, just to save space 
+#      COUNT:
+#          count RELOAD_CNT values and than store one, just to save space
+#      AVR:
+#          average calculation with RELOAD_CNT values
+#      ALL:
+#           saving everything
+#   MIN:
+#       Min value for this signal, if not used set it i.e. to 0 or any other numeric value
+#   MAX:
+#       Max value for this signal, if not used set it i.e. to 0 or any other numeric value
+#   CURRENT_IN_RANGE:
+#       the signal is within MIN and MAX
+#       MIN, MAX and IN_RANGE can be omitted if not used
+#   AVR_IN_RANGE:
+#       same as CURRENT_IN_RANGE but checked against the AVR value(s)
+#   DECIMALS:
+#       number of digits after comma (for float)
+#
+#   __RRD_DB__:
+#       this defines the RRDTool-Database for the input data. The syntax is:
+#            __RRD_DB__:
+#                - [[OUTFILE, <"CONST">, <"Name_of_the_RRD-file">],
+#                   [<§DataStore> or <"SELF">, <§DataShelf>, <"Name_of_the_desired_DataBox">],
+#                   [<§DataStore> or <"SELF">, <§DataShelf, <"Name_of_the_desired_DataBox">],
+#                   ... repeat theses lines as much as the rrd-file needs
+#                   [INFILE, CONST, 'OutTemp.txt']]
+#       
+#       the first line has to be the output file definition starting with "OUTFILE". The second value defines the RRD-filename, this could be a DataShelf 
+#       from where a value is taken or "CONST". The third value is the file name. Use "§name" and "CSV_MODE_DATA" if the datastore-template is used for
+#       several different devices.
+#       References to other Stores or shelfs starting with "§". For values from the DataStore where the __RRD_DB__-definition is defined use "SELF" otherwise 
+#       use §<DataStoreName>.
+#       If there are less values then the RRD-File is build for use lines like "[SELF, CONST, '0']". This fills up the RRD-data with "0". 
+#       Instead of <§DataStore> or <"SELF"> "INFILE" is allowed to define a file from which a value is taken. The file should contain only a 
+#       string that represents the value.
+#
+#   structure of a Storedefinition:
+#   <StoreName>: (with the following StoreShelf')
+#           Commons:
+#               keys and values as descriped above
+#           <shelf_1>:
+#               keys and values as descriped above
+#           <shelf_2>:
+#               keys and values as descriped above
+#           <shelf_3>:
+#               keys and values as descriped above
+#           ...
+#   'Commons' is a ShelfName which every Store must have.
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# stores defined at the initialization of the program
+# syntax:
+#   StoreName: DataStore template
+generate_stores:
+    ~DaBo: DaBoStore
+    ~system: System
+    ~cpustats: cpustats
+    ~eth0: ETH
+    ~sda: sdx
+    ~sdb: sdx
+        
+# these are the DataStore templates
+DataStores:
+    Switch:
+        Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 700         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 700  # default time ro reload TIME counter
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - [ESP Infos, __Devider, DIV_DATA]
+                - [Name, name, CURRENT_DATA]
+                - [Hostname, hostname, CURRENT_DATA]
+                - [IP, IP, CURRENT_DATA]
+                - [Architecture, Architecture, CURRENT_DATA]
+                - [Type, Type, CURRENT_DATA]
+                - [Version, Version, CURRENT_DATA]
+                - [Hardware, Hardware, CURRENT_DATA]
+                - [Network, Network, CURRENT_DATA]
+                - [SSID, SSID, CURRENT_DATA]
+                - [APName, APName, CURRENT_DATA]
+                - [MAC, MAC, CURRENT_DATA]
+                - [TransmitCycle, TransmitCycle, CURRENT_DATA]
+                - [MeasuringCycle, MeasuringCycle, CURRENT_DATA]
+                - [Hash, Hash, CURRENT_DATA]
+                - [Size, Size, CURRENT_DATA]
+                - [PageReload, PageReload, CURRENT_DATA]
+                - [Server, Server, CURRENT_DATA]
+                - [Port, Port, CURRENT_DATA]
+                - [delivPages, delivPages, CURRENT_DATA]
+                - [uptime, uptime, CURRENT_DATA]
+                - [GoodTrans, goodTrans, CURRENT_DATA]
+                - [badTrans, badTrans, CURRENT_DATA]
+                - [LED, LED, CURRENT_DATA]
+                - [RSSI, WiFi, CURRENT_DATA]
+                - [Status Infos, __Devider, DIV_DATA]
+                - [Status, status, CURRENT_DATA]
+                - [on-seconds, ontime, CURRENT_DATA]
+                - [off-seconds, offtime, CURRENT_DATA]
+                - [Cycles, cycles, CURRENT_DATA]
+                - [DataStore Statistics, __Devider, DIV_DATA]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        name:                   # this is the full name "Devicename+MAC"
+        hostname:               # this is the Devicename only, given by user    
+        IP: 
+            CSV_MODE: 'CHANGE'
+        Architecture: 
+            CSV_MODE: 'CHANGE'
+        Type:
+            CSV_MODE: 'CHANGE'
+        Version: 
+            CSV_MODE: 'CHANGE'
+        Hardware: 
+            CSV_MODE: 'CHANGE'
+        Network:                # use Network or SSID. Older Nodes using Network newer ones should use
+            CSV_MODE: 'CHANGE'
+        SSID:
+            CSV_MODE: 'CHANGE'
+        APName: 
+            CSV_MODE: 'CHANGE'
+        MAC:
+            CSV_MODE: 'CHANGE'
+        TransmitCycle:
+            CURRENT_DATA: 20
+            CSV_MODE: 'CHANGE'
+        MeasuringCycle:
+            CSV_MODE: 'CHANGE'
+        Hash:
+            CSV_MODE: 'CHANGE'
+        Size:
+            CSV_MODE: 'CHANGE'
+        PageReload:
+            CSV_MODE: 'CHANGE'
+        Server:
+            CSV_MODE: 'CHANGE'
+        Port:
+            CSV_MODE: 'CHANGE'
+        uptime:
+        delivPages:  
+            CSV_MODE: 'CHANGE'
+        goodTrans:
+        badTrans: 
+            CSV_MODE: 'CHANGE'
+        LED:
+            CSV_MODE: 'CHANGE'
+        WiFi: 
+            CSV_MODE: 'CHANGE'
+        status:
+            CSV_MODE: 'CHANGE'
+        ontime:
+            CSV_MODE: 'CHANGE'
+        offtime:
+            CSV_MODE: 'CHANGE'
+        cycles:
+            CSV_MODE: 'CHANGE'
+
+    System:
+        Commons:            
+            TIMEOUT: 20
+            RELOAD_TIMEOUT: 600
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - [System Infos, __Devider, DIV_DATA]
+                - [Store Name, MyName, CURRENT_DATA]
+                - [IP, My_IP, CURRENT_DATA]
+                - [Program, ProgName, CURRENT_DATA]
+
+                - [Time Infos, __Devider, DIV_DATA]
+                - [System uptime, uptime_sys, CURRENT_DATA]
+                - [App Starttime, starttime_app, CURRENT_DATA]
+                - [App runtime, uptime_app, CURRENT_DATA]
+                - [__Disk Infos, __Devider, DIV_DATA]
+                - [disk_used, disk_used, CURRENT_DATA]
+                - [disk_free, disk_free, CURRENT_DATA]
+                - [disk_used_percent, disk_percent, CURRENT_DATA]
+                - [__DataStore Infos, __Devider, DIV_DATA]
+
+#            __MERGE:
+#                - [5, get, [~system, uptime_app, CURRENT_DATA], [uptime_test, CURRENT_DATA]]
+#                - [5, orc, [~cpustats, coretemp, CURRENT_DATA], [CPU_OK, CURRENT_DATA], 0x0010]
+#                - [5, add, [~cpustats, coretemp, CURRENT_DATA], [~cpustats, coretemp, CURRENT_DATA], [~cpustats, coretemp, CURRENT_DATA], [~cpustats, coretemp, CURRENT_DATA], [~cpustats, coretemp, CURRENT_DATA], [func_test, CURRENT_DATA]]
+
+#            __RRD_DB__:
+#                - [ [OUTFILE, §Commons, Store],
+#                    [SELF, '§coretemp', CURRENT_DATA],
+#                    [SELF, '§CPU_load_1m', CURRENT_DATA],
+#                    [SELF, '§CPU_load_5m', CURRENT_DATA],
+#                    [SELF, '§CPU_load_15m', CURRENT_DATA] ]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        MyName:
+            CSV_MODE: "CHANGE"
+        My_IP:
+            CSV_MODE: "CHANGE"
+        ProgName:
+            CSV_MODE: "CHANGE"
+        __Timings:
+            CURRENT_DATA: "- - - - >"
+        uptime_sys:
+        starttime_ticks:
+        starttime_app:
+            CSV_MODE: "CHANGE"
+        uptime_app:
+        uptime_test:
+        CPU_OK:
+        func_test:
+        __Disk Infos:
+            CURRENT_DATA: "- - - - >"
+        disk_total:
+        disk_used:
+        disk_free:
+        disk_percent:
+            CSV_MODE: "CHANGE"
+            DECIMALS: 2
+        __DataStore Infos:
+            CURRENT_DATA: "- - - - >"
+
+    cpustats:
+        Commons:            
+            TIMEOUT: 20
+            RELOAD_TIMEOUT: 600
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - [CPU Infos, __Devider, DIV_DATA]
+                - [CPU_load_1m, CPU_load_1m, CURRENT_DATA]
+                - [CPU_load_5m, CPU_load_5m, CURRENT_DATA]
+                - [CPU_load_15m, CPU_load_15m, CURRENT_DATA]
+                - [coretemp, coretemp, CURRENT_DATA]
+                - [__DataStore Infos, __Devider, DIV_DATA]
+            __RRD_DB__:
+                - [ [OUTFILE, §Commons, Store],
+                    [SELF, '§coretemp', CURRENT_DATA],
+                    [SELF, '§CPU_load_1m', CURRENT_DATA],
+                    [SELF, '§CPU_load_5m', CURRENT_DATA],
+                    [SELF, '§CPU_load_15m', CURRENT_DATA] ]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        __Timings:
+            CURRENT_DATA: "- - - - >"
+        coretemp: 
+            CSV_MODE: "COUNT"
+            CNT: 1
+            RELOAD_CNT: 10
+            CSV_MODE: "CHANGE"
+            DECIMALS: 2
+            CURRENT_IN_RANGE: FALSE
+            MIN: 0
+            MAX: 85
+        CPU_load_1m: 
+            CSV_MODE: "COUNT"
+            CNT: 1
+            RELOAD_CNT: 10
+            DECIMALS: 2
+        CPU_load_5m: 
+            CSV_MODE: "COUNT"
+            CNT: 1
+            RELOAD_CNT: 10
+            DECIMALS: 2
+        CPU_load_15m: 
+            CSV_MODE: "COUNT"
+            CNT: 1
+            RELOAD_CNT: 10
+            DECIMALS: 2
+        __DataStore Infos:
+            CURRENT_DATA: "- - - - >"
+
+    ETH:
+        Commons:            
+            TIMEOUT: 20
+            RELOAD_TIMEOUT: 600
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - [ETH Infos, __Devider, DIV_DATA]
+                - [ETH Tx, eth_Tx, CURRENT_DATA]
+                - [ETH Rx, eth_Rx, CURRENT_DATA]
+                - [__DataStore Infos, __Devider, DIV_DATA]
+            __RRD_DB__:
+                - [ [OUTFILE, §Commons, Store],
+                    [SELF, '§eth_Tx', CURRENT_DATA],
+                    [SELF, '§eth_Rx', CURRENT_DATA] ]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        eth_Tx:
+            CSV_MODE: "COUNT"
+            CNT: 1
+            RELOAD_CNT: 10
+        eth_Rx:
+            CSV_MODE: "COUNT"
+            CNT: 1
+            RELOAD_CNT: 10
+        __DataStore Infos:
+            CURRENT_DATA: "- - - - >"
+
+    sdx:
+        Commons:            
+            TIMEOUT: 20
+            RELOAD_TIMEOUT: 600
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - [sdx Infos, __Devider, DIV_DATA]
+                - [Write sectors, write, CURRENT_DATA]
+                - [Read sectors, read, CURRENT_DATA]
+                - [__DataStore Infos, __Devider, DIV_DATA]
+            __RRD_DB__:
+                - [ [OUTFILE, §Commons, Store],
+                    [SELF, '§write', CURRENT_DATA],
+                    [SELF, '§read', CURRENT_DATA] ]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        write:
+            CSV_MODE: "COUNT"
+            CNT: 1
+            RELOAD_CNT: 10
+        read:
+            CSV_MODE: "COUNT"
+            CNT: 1
+            RELOAD_CNT: 10
+        __DataStore Infos:
+            CURRENT_DATA: "- - - - >"
+
+    ToF:
+        Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 70         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 70  # default time ro reload TIME counter
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __RRD_DB__:
+                -   [[OUTFILE, §Commons, Store],
+                    [SELF, §distance, CURRENT_DATA],      # channel 0 in rrd
+                    [SELF, CONST, 0]]   # channel 1 in rrd is not used
+            __WEB__:
+                - [ESP Infos, __Devider, DIV_DATA]
+                - [Name, name, CURRENT_DATA]
+                - [Hostname, hostname, CURRENT_DATA]
+                - [IP, IP, CURRENT_DATA]
+                - [Architecture, Architecture, CURRENT_DATA]
+                - [Type, Type, CURRENT_DATA]
+                - [Version, Version, CURRENT_DATA]
+                - [Hardware, Hardware, CURRENT_DATA]
+                - [Network, Network, CURRENT_DATA]
+                - [APName, APName, CURRENT_DATA]
+                - [MAC, MAC, CURRENT_DATA]
+                - [TransmitCycle, TransmitCycle, CURRENT_DATA]
+                - [MeasuringCycle, MeasuringCycle, CURRENT_DATA]
+                - [Hash, Hash, CURRENT_DATA]
+                - [Size, Size, CURRENT_DATA]
+                - [PageReload, PageReload, CURRENT_DATA]
+                - [Server, Server, CURRENT_DATA]
+                - [Port, Port, CURRENT_DATA]
+                - [uptime, uptime, CURRENT_DATA]
+                - [GoodTrans, goodTrans, CURRENT_DATA]
+                - [badTrans, badTrans, CURRENT_DATA]
+                - [LED, LED, CURRENT_DATA]
+                - [RSSI, WiFi, CURRENT_DATA]
+                - [Distance Info, __Devider, DIV_DATA]
+                - [distance, distance, CURRENT_DATA]
+                - [DataStore Statistics, __Devider, DIV_DATA]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        name:                   # this is the full name "Devicename+MAC"
+            CSV_MODE: 'CHANGE'
+        hostname:               # this is the Devicename only, given by user    
+            CSV_MODE: 'CHANGE'
+        IP: 
+            CSV_MODE: 'CHANGE'
+        Architecture: 
+            CSV_MODE: 'CHANGE'
+        Type:
+            CSV_MODE: 'CHANGE'
+        Version: 
+            CSV_MODE: 'CHANGE'
+        Hardware: 
+            CSV_MODE: 'CHANGE'
+        Network: 
+            CSV_MODE: 'CHANGE'
+        APName: 
+            CSV_MODE: 'CHANGE'
+        MAC:
+            CSV_MODE: 'CHANGE'
+        TransmitCycle:
+            CURRENT_DATA: 20
+            CSV_MODE: 'CHANGE'
+        MeasuringCycle:
+            CSV_MODE: 'CHANGE'
+        Hash:
+            CSV_MODE: 'CHANGE'
+        Size:
+            CSV_MODE: 'CHANGE'
+        PageReload:
+            CSV_MODE: 'CHANGE'
+        Server:
+            CSV_MODE: 'CHANGE'
+        Port:
+            CSV_MODE: 'CHANGE'
+        uptime:
+        delivPages:  
+            CSV_MODE: 'CHANGE'
+        goodTrans:
+        badTrans: 
+            CSV_MODE: 'CHANGE'
+        LED:
+            CSV_MODE: 'CHANGE'
+        WiFi: 
+            CSV_MODE: 'CHANGE'
+        distance: 
+            CSV_MODE: 'CHANGE'
+
+    DS1820-0:
+        Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 700         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 700  # default time ro reload TIME counter
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - [ESP Infos, __Devider, DIV_DATA]
+                - [Name, name, CURRENT_DATA]
+                - [Hostname, hostname, CURRENT_DATA]
+                - [IP, IP, CURRENT_DATA]
+                - [Architecture, Architecture, CURRENT_DATA]
+                - [Type, Type, CURRENT_DATA]
+                - [Version, Version, CURRENT_DATA]
+                - [Hardware, Hardware, CURRENT_DATA]
+                - [Network, Network, CURRENT_DATA]
+                - [SSID, SSID, CURRENT_DATA]
+                - [APName, APName, CURRENT_DATA]
+                - [MAC, MAC, CURRENT_DATA]
+                - [TransmitCycle, TransmitCycle, CURRENT_DATA]
+                - [MeasuringCycle, MeasuringCycle, CURRENT_DATA]
+                - [Hash, Hash, CURRENT_DATA]
+                - [Size, Size, CURRENT_DATA]
+                - [PageReload, PageReload, CURRENT_DATA]
+                - [Server, Server, CURRENT_DATA]
+                - [Port, Port, CURRENT_DATA]
+                - [delivPages, delivPages, CURRENT_DATA]
+                - [uptime, uptime, CURRENT_DATA]
+                - [GoodTrans, goodTrans, CURRENT_DATA]
+                - [badTrans, badTrans, CURRENT_DATA]
+                - [LED, LED, CURRENT_DATA]
+                - [RSSI, WiFi, CURRENT_DATA]
+                - [DataStore Statistics, __Devider, DIV_DATA]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        name:                   # this is the full name "Devicename+MAC"
+        hostname:               # this is the Devicename only, given by user    
+        IP: 
+            CSV_MODE: 'CHANGE'
+        Architecture: 
+            CSV_MODE: 'CHANGE'
+        Type:
+            CSV_MODE: 'CHANGE'
+        Version: 
+            CSV_MODE: 'CHANGE'
+        Hardware: 
+            CSV_MODE: 'CHANGE'
+        Network:                # use Network or SSID. Older Nodes using Network newer ones should use
+            CSV_MODE: 'CHANGE'
+        SSID:
+            CSV_MODE: 'CHANGE'
+        APName: 
+            CSV_MODE: 'CHANGE'
+        MAC:
+            CSV_MODE: 'CHANGE'
+        TransmitCycle:
+            CURRENT_DATA: 20
+            CSV_MODE: 'CHANGE'
+        MeasuringCycle:
+            CSV_MODE: 'CHANGE'
+        Hash:
+            CSV_MODE: 'CHANGE'
+        Size:
+            CSV_MODE: 'CHANGE'
+        PageReload:
+            CSV_MODE: 'CHANGE'
+        Server:
+            CSV_MODE: 'CHANGE'
+        Port:
+            CSV_MODE: 'CHANGE'
+        uptime:
+        delivPages:  
+            CSV_MODE: 'CHANGE'
+        goodTrans:
+        badTrans: 
+            CSV_MODE: 'CHANGE'
+        LED:
+            CSV_MODE: 'CHANGE'
+        WiFi: 
+            CSV_MODE: 'CHANGE'
+
+    DS1820-1:
+        Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 700         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 700  # default time ro reload TIME counter
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __RRD_DB__:
+                -   [[OUTFILE, §Commons, Store],
+                    [SELF, §Value_0, CURRENT_DATA],      # channel 0 in rrd
+                    [SELF, CONST, 0],   # channel 1 in rrd is not used
+                    [§weather, §Temperature, CURRENT_DATA]]      # channel 2 in rrd
+            __WEB__:
+                - [ESP Infos, __Devider, DIV_DATA]
+                - [Name, name, CURRENT_DATA]
+                - [Hostname, hostname, CURRENT_DATA]
+                - [IP, IP, CURRENT_DATA]
+                - [Architecture, Architecture, CURRENT_DATA]
+                - [Type, Type, CURRENT_DATA]
+                - [Version, Version, CURRENT_DATA]
+                - [Hardware, Hardware, CURRENT_DATA]
+                - [Network, Network, CURRENT_DATA]
+                - [SSID, SSID, CURRENT_DATA]
+                - [APName, APName, CURRENT_DATA]
+                - [MAC, MAC, CURRENT_DATA]
+                - [TransmitCycle, TransmitCycle, CURRENT_DATA]
+                - [MeasuringCycle, MeasuringCycle, CURRENT_DATA]
+                - [Hash, Hash, CURRENT_DATA]
+                - [Size, Size, CURRENT_DATA]
+                - [PageReload, PageReload, CURRENT_DATA]
+                - [Server, Server, CURRENT_DATA]
+                - [Port, Port, CURRENT_DATA]
+                - [delivPages, delivPages, CURRENT_DATA]
+                - [uptime, uptime, CURRENT_DATA]
+                - [GoodTrans, goodTrans, CURRENT_DATA]
+                - [badTrans, badTrans, CURRENT_DATA]
+                - [LED, LED, CURRENT_DATA]
+                - [RSSI, WiFi, CURRENT_DATA]
+                - ['Temp.-Infos', __Devider, DIV_DATA]
+                - [Adress_0, Adress_0, CURRENT_DATA]
+                - [Value_0, Value_0, CURRENT_DATA]
+                - [DataStore Statistics, __Devider, DIV_DATA]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        name:                   # this is the full name "Devicename+MAC"
+            CSV_MODE: 'CHANGE'
+        hostname:               # this is the Devicename only, given by user    
+            CSV_MODE: 'CHANGE'
+        IP: 
+            CSV_MODE: 'CHANGE'
+        Architecture: 
+            CSV_MODE: 'CHANGE'
+        Type:
+            CSV_MODE: 'CHANGE'
+        Version: 
+            CSV_MODE: 'CHANGE'
+        Hardware: 
+            CSV_MODE: 'CHANGE'
+        Network: 
+            CSV_MODE: 'CHANGE'
+        SSID:
+            CSV_MODE: 'CHANGE'
+        APName: 
+            CSV_MODE: 'CHANGE'
+        MAC:
+            CSV_MODE: 'CHANGE'
+        TransmitCycle:
+            CURRENT_DATA: 20
+            CSV_MODE: 'CHANGE'
+        MeasuringCycle:
+            CSV_MODE: 'CHANGE'
+        Hash:
+            CSV_MODE: 'CHANGE'
+        Size:
+            CSV_MODE: 'CHANGE'
+        PageReload:
+            CSV_MODE: 'CHANGE'
+        Server:
+            CSV_MODE: 'CHANGE'
+        Port:
+            CSV_MODE: 'CHANGE'
+        uptime:
+        delivPages:  
+            CSV_MODE: 'CHANGE'
+        goodTrans:
+        badTrans: 
+            CSV_MODE: 'CHANGE'
+        LED:
+            CSV_MODE: 'CHANGE'
+        WiFi: 
+        Adress_0:
+            CSV_MODE: 'CHANGE'
+        Value_0:
+            CSV_MODE: 'CHANGE'
+
+    DS1820-2:
+        Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 700         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 700  # default time ro reload TIME counter
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __RRD_DB__:
+                -   [[OUTFILE, §Commons, Store],
+                    [SELF, §Value_0, CURRENT_DATA],      # channel 0 in rrd
+                    [SELF, §Value_1, CURRENT_DATA],   # channel 1 in rrd
+                    [§weather, §Temperature, CURRENT_DATA]]      # channel 2 in rrd
+            __WEB__:
+                - [ESP Infos, __Devider, DIV_DATA]
+                - [Name, name, CURRENT_DATA]
+                - [Hostname, hostname, CURRENT_DATA]
+                - [IP, IP, CURRENT_DATA]
+                - [Architecture, Architecture, CURRENT_DATA]
+                - [Type, Type, CURRENT_DATA]
+                - [Version, Version, CURRENT_DATA]
+                - [Hardware, Hardware, CURRENT_DATA]
+                - [Network, Network, CURRENT_DATA]
+                - [SSID, SSID, CURRENT_DATA]
+                - [APName, APName, CURRENT_DATA]
+                - [MAC, MAC, CURRENT_DATA]
+                - [TransmitCycle, TransmitCycle, CURRENT_DATA]
+                - [MeasuringCycle, MeasuringCycle, CURRENT_DATA]
+                - [Hash, Hash, CURRENT_DATA]
+                - [Size, Size, CURRENT_DATA]
+                - [PageReload, PageReload, CURRENT_DATA]
+                - [Server, Server, CURRENT_DATA]
+                - [Port, Port, CURRENT_DATA]
+                - [delivPages, delivPages, CURRENT_DATA]
+                - [uptime, uptime, CURRENT_DATA]
+                - [GoodTrans, goodTrans, CURRENT_DATA]
+                - [badTrans, badTrans, CURRENT_DATA]
+                - [LED, LED, CURRENT_DATA]
+                - [RSSI, WiFi, CURRENT_DATA]
+                - ['Temp.-Infos', __Devider, DIV_DATA]
+                - [Adress_0, Adress_0, CURRENT_DATA]
+                - [Value_0, Value_0, CURRENT_DATA]
+                - [Adress_1, Adress_1, CURRENT_DATA]
+                - [Value_1, Value_1, CURRENT_DATA]
+                - [DataStore Statistics, __Devider, DIV_DATA]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        name:                   # this is the full name "Devicename+MAC"
+            CSV_MODE: 'CHANGE'
+        hostname:               # this is the Devicename only, given by user    
+            CSV_MODE: 'CHANGE'
+        IP: 
+            CSV_MODE: 'CHANGE'
+        Architecture: 
+            CSV_MODE: 'CHANGE'
+        Type:
+            CSV_MODE: 'CHANGE'
+        Version: 
+            CSV_MODE: 'CHANGE'
+        Hardware: 
+            CSV_MODE: 'CHANGE'
+        Network: 
+            CSV_MODE: 'CHANGE'
+        SSID:
+            CSV_MODE: 'CHANGE'
+        APName: 
+            CSV_MODE: 'CHANGE'
+        MAC:
+            CSV_MODE: 'CHANGE'
+        TransmitCycle:
+            CURRENT_DATA: 20
+            CSV_MODE: 'CHANGE'
+        MeasuringCycle:
+            CSV_MODE: 'CHANGE'
+        Hash:
+            CSV_MODE: 'CHANGE'
+        Size:
+            CSV_MODE: 'CHANGE'
+        PageReload:
+            CSV_MODE: 'CHANGE'
+        Server:
+            CSV_MODE: 'CHANGE'
+        Port:
+            CSV_MODE: 'CHANGE'
+        uptime:
+        delivPages:  
+            CSV_MODE: 'CHANGE'
+        goodTrans:
+        badTrans: 
+            CSV_MODE: 'CHANGE'
+        LED:
+            CSV_MODE: 'CHANGE'
+        WiFi: 
+        Adress_0:
+            CSV_MODE: 'CHANGE'
+        Value_0:
+            CSV_MODE: 'CHANGE'
+        Adress_1:
+            CSV_MODE: 'CHANGE'
+        Value_1:
+            CSV_MODE: 'CHANGE'
+
+    DS1820:
+        Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 700         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 700  # default time ro reload TIME counter
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __RRD_DB__:
+                -   [[OUTFILE, §Commons, Store],
+                    [SELF, §Value_0, CURRENT_DATA],      # channel 0 in rrd
+                    [SELF, §Value_1, CURRENT_DATA],   # channel 1 in rrd
+                    [§weather, §Temperature, CURRENT_DATA]]      # channel 2 in rrd
+            __WEB__:
+                - [ESP Infos, __Devider, DIV_DATA]
+                - [Name, name, CURRENT_DATA]
+                - [Hostname, hostname, CURRENT_DATA]
+                - [IP, IP, CURRENT_DATA]
+                - [Architecture, Architecture, CURRENT_DATA]
+                - [Type, Type, CURRENT_DATA]
+                - [Version, Version, CURRENT_DATA]
+                - [Hardware, Hardware, CURRENT_DATA]
+                - [Network, Network, CURRENT_DATA]
+                - [SSID, SSID, CURRENT_DATA]
+                - [APName, APName, CURRENT_DATA]
+                - [MAC, MAC, CURRENT_DATA]
+                - [TransmitCycle, TransmitCycle, CURRENT_DATA]
+                - [MeasuringCycle, MeasuringCycle, CURRENT_DATA]
+                - [Hash, Hash, CURRENT_DATA]
+                - [Size, Size, CURRENT_DATA]
+                - [PageReload, PageReload, CURRENT_DATA]
+                - [Server, Server, CURRENT_DATA]
+                - [Port, Port, CURRENT_DATA]
+                - [delivPages, delivPages, CURRENT_DATA]
+                - [uptime, uptime, CURRENT_DATA]
+                - [GoodTrans, goodTrans, CURRENT_DATA]
+                - [badTrans, badTrans, CURRENT_DATA]
+                - [LED, LED, CURRENT_DATA]
+                - [RSSI, WiFi, CURRENT_DATA]
+                - ['Temp.-Infos', __Devider, DIV_DATA]
+                - [Adress_0, Adress_0, CURRENT_DATA]
+                - [Value_0, Value_0, CURRENT_DATA]
+                - [Adress_1, Adress_1, CURRENT_DATA]
+                - [Value_1, Value_1, CURRENT_DATA]
+                - [Adress_2, Adress_2, CURRENT_DATA]
+                - [Value_2, Value_2, CURRENT_DATA]
+                - [DataStore Statistics, __Devider, DIV_DATA]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        name:                   # this is the full name "Devicename+MAC"
+            CSV_MODE: 'CHANGE'
+        hostname:               # this is the Devicename only, given by user    
+            CSV_MODE: 'CHANGE'
+        IP: 
+            CSV_MODE: 'CHANGE'
+        Architecture: 
+            CSV_MODE: 'CHANGE'
+        Type:
+            CSV_MODE: 'CHANGE'
+        Version: 
+            CSV_MODE: 'CHANGE'
+        Hardware: 
+            CSV_MODE: 'CHANGE'
+        Network: 
+            CSV_MODE: 'CHANGE'
+        SSID:
+            CSV_MODE: 'CHANGE'
+        RSSI:
+            CSV_MODE: 'CHANGE'
+        APName: 
+            CSV_MODE: 'CHANGE'
+        MAC:
+            CSV_MODE: 'CHANGE'
+        TransmitCycle:
+            CURRENT_DATA: 20
+            CSV_MODE: 'CHANGE'
+        MeasuringCycle:
+            CSV_MODE: 'CHANGE'
+        Hash:
+            CSV_MODE: 'CHANGE'
+        Size:
+            CSV_MODE: 'CHANGE'
+        PageReload:
+            CSV_MODE: 'CHANGE'
+        Server:
+            CSV_MODE: 'CHANGE'
+        Port:
+            CSV_MODE: 'CHANGE'
+        uptime:
+        delivPages:  
+            CSV_MODE: 'CHANGE'
+        goodTrans:
+        badTrans: 
+            CSV_MODE: 'CHANGE'
+        LED:
+            CSV_MODE: 'CHANGE'
+        WiFi: 
+        Adress_0:
+            CSV_MODE: 'CHANGE'
+        Value_0:
+            CSV_MODE: 'CHANGE'
+            DECIMALS: 2
+        Adress_1:
+            CSV_MODE: 'CHANGE'
+        Value_1:
+            CSV_MODE: 'CHANGE'
+            DECIMALS: 2
+        Adress_2:
+            CSV_MODE: 'CHANGE'
+        Value_2:
+            CSV_MODE: 'CHANGE'
+            DECIMALS: 2
+
+    SHPLG2-1:
+        Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 180         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 180  # default time ro reload TIME counter
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - ['Solar Infos', __Devider, DIV_DATA]
+                - [Name, name, CURRENT_DATA]
+                - [IP, IP, CURRENT_DATA]
+                - [Type, Type, CURRENT_DATA]
+                - ['Power Infos', __Devider, DIV_DATA]
+                - [Power, Power, CURRENT_DATA]
+                - [DataStore Statistics, __Devider, DIV_DATA]
+            __RRD_DB__:
+                -   [[OUTFILE, §Commons, Store],
+                    [SELF, §Power, CURRENT_DATA]]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        name:                 
+            CSV_MODE: 'CHANGE'
+        Hardware:                 
+            CSV_MODE: 'CHANGE'
+        IP: 
+            CSV_MODE: 'CHANGE'            
+        Type:                 
+            CSV_MODE: 'CHANGE'
+        Power:
+            CSV_MODE: 'CHANGE'
+
+    'S4PL-00416EU':
+        Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 180         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 180  # default time ro reload TIME counter
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - ['Aquarium Infos', __Devider, DIV_DATA]
+                - [Name, name, CURRENT_DATA]
+                - [Type, Type, CURRENT_DATA]
+                - ['Power Infos', __Devider, DIV_DATA]
+                - [Power_0, power_0, CURRENT_DATA]
+                - [Power_1, power_1, CURRENT_DATA]
+                - [Power_2, power_2, CURRENT_DATA]
+                - [Power_3, power_3, CURRENT_DATA]
+                - [DataStore Statistics, __Devider, DIV_DATA]
+            __RRD_DB__:
+                - [[OUTFILE, §Commons, Store],
+                  [SELF, §power_0, CURRENT_DATA],      # channel 0 in rrd
+                  [SELF, §power_1, CURRENT_DATA],   # channel 1 in rrd
+                  [SELF, §power_2, CURRENT_DATA],   # channel 2 in rrd
+                  [SELF, §power_3, CURRENT_DATA]]        # channel 3 in rrd
+
+        __Devider:
+            DIV_DATA: "- - - - >"
+        name:                 
+            CSV_MODE: 'CHANGE'
+        Type:                 
+            CSV_MODE: 'CHANGE'
+        IP: 
+            CSV_MODE: 'CHANGE'
+        power_0:
+            CSV_MODE: 'CHANGE'
+        power_1:
+            CSV_MODE: 'CHANGE'
+        power_2:
+            CSV_MODE: 'CHANGE'
+        power_3:
+            CSV_MODE: 'CHANGE'
+
+    Shelly_Plug:
+        Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 180         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 180  # default time ro reload TIME counter
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - ['Solar Infos', __Devider, DIV_DATA]
+                - [Name, name, CURRENT_DATA]
+                - [Type, Type, CURRENT_DATA]
+                - ['Power Infos', __Devider, DIV_DATA]
+                - [Power, Power, CURRENT_DATA]
+                - [Total Power, Total, CURRENT_DATA]
+                - [Wm, diff_Wm, CURRENT_DATA]
+                - [kWh, diff_kWh, CURRENT_DATA]
+                - [DataStore Statistics, __Devider, DIV_DATA]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        name:                 
+            CSV_MODE: 'CHANGE'
+        Type:                 
+            CSV_MODE: 'CHANGE'
+        Power:
+            CSV_MODE: 'CHANGE'
+        Total:
+            CSV_MODE: 'CHANGE'
+        diff_Wm:
+            CSV_MODE: 'CHANGE'
+        diff_kWh:
+            CSV_MODE: 'CHANGE'
+
+    Weather:
+        Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 1800         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 1800  # default time ro reload TIME counter
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - ['Weather Infos', __Devider, DIV_DATA]
+                - [Temperature, Temperature, CURRENT_DATA]
+                - [Temperature_min, Temperature_min, CURRENT_DATA]
+                - [Temperature_max, Temperature_max, CURRENT_DATA]
+                - [Feels_like, Feels_like,CURRENT_DATA]
+                - [Humidity, Humidity, CURRENT_DATA]
+                - [Pressure, Pressure, CURRENT_DATA]
+                - [Wind_Speed, Wind_Speed, CURRENT_DATA]
+                - [Wind_Direction, Wind_Direction, CURRENT_DATA]
+                - [Wind_DirName, Wind_DirName, CURRENT_DATA]
+                - [Sunrise, Sunrise, CURRENT_DATA]
+                - [Sunset, Sunset, CURRENT_DATA]
+                - [DataStore Statistics, __Devider, DIV_DATA]
+                
+            __RRD_DB__:
+                -   [[OUTFILE, §Commons, Store],
+                    [SELF, §Temperature, CURRENT_DATA],      # channel 0 in rrd
+                    [SELF, §Temperature_min, CURRENT_DATA],   # channel 1 in rrd
+                    [SELF, §Temperature_max, CURRENT_DATA],   # channel 2 in rrd
+                    [SELF, §Feels_like, CURRENT_DATA],        # channel 3 in rrd
+                    [SELF, §Humidity, CURRENT_DATA],          # channel 4 in rrd
+                    [SELF, §Pressure, CURRENT_DATA],          # channel 5 in rrd
+                    [SELF, §Wind_Speed, CURRENT_DATA],       # channel 6 in rrd
+                    [SELF, §Wind_Direction, CURRENT_DATA]]   # channel 7 in rrd
+
+        __Devider:
+            DIV_DATA: "- - - - >"
+        json: 
+        Temperature:
+            CSV_MODE: 'CHANGE'
+        Temperature_min:
+            CSV_MODE: 'CHANGE'
+        Temperature_max:
+            CSV_MODE: 'CHANGE'
+        Feels_like:
+            CSV_MODE: 'CHANGE'
+        Humidity:
+            CSV_MODE: 'CHANGE'
+        Pressure:
+            CSV_MODE: 'CHANGE'
+        Wind_Speed:
+            CSV_MODE: 'CHANGE'
+        Wind_Direction:
+            CSV_MODE: 'CHANGE'
+        Wind_DirName:
+            CSV_MODE: 'CHANGE'
+        Sunrise:
+            CSV_MODE: 'CHANGE'
+        Sunset:
+            CSV_MODE: 'CHANGE'
+
+    # DataStore with 6 channels (fits for all DS1820-sensors with up to 6 channels without rrd-file)
+    
+    DaBoStore:
+        Commons:                # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 0         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 0     # default time ro reload TIME counter
+            Active: True
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - [DaBo Infos, __Devider, DIV_DATA]
+                - [Stores, stores, CURRENT_DATA]
+                - [updated DataSets, updated DataSets, CURRENT_DATA]
+                - [updated Data, updated Data, CURRENT_DATA]
+                - [changed Data, changed Data, CURRENT_DATA]
+                - [last sender, last sender, CURRENT_DATA]
+                - [DataStore Statistics, __Devider, DIV_DATA]
+        __Devider:
+            DIV_DATA: "- - - - >"
+        updated DataSets:
+        updated Data:
+        changed Data:
+        last sender:
+        stores:
+
+  

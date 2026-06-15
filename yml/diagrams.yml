@@ -1,0 +1,677 @@
+# -----------------------------------------------------------------------------------------------------------------
+#   diagrams.ynl contains information for rrdtool graph command. this is used to create graphs for various sensors 
+#   and devices. the configuration is structured in a way that allows for easy management of different devices 
+#   and their respective channels.
+#   Diagram configuration for various sensors and devices
+#   Each device has its own section with channels and their properties.
+#   The configuration includes time intervals for data collection and display.
+#   The channels are defined with their IDs, names, data sources, colors, and units.
+#
+#   "TimeText" it is a list used to specify the time interval which is displayed
+#               in the graphs. Each entry is a list with two elements: the number of units and the type of unit.
+#               the type of unit can be 'hour', 'day', 'week', 'month', 'year'. They are the same as the time value 
+#               of the rrdtool-command.
+#   
+#   the name of the graphic-file is a combination of the device name and the time interval. e.g.
+#   'Buero-68C63A87FACE_1_day' for the device 'Buero-68C63A87FACE' with a time interval of 1 day.
+#   'Buero-68C63A87FACE_4_hour' for the device 'Buero-68C63A87FACE' with a time interval of 4 hours etc.
+
+#   "channel_x" defines the channels for each device. Each channel has its own properties like ID, Name, rrd_DS, color and Unit.
+#     "ID" is the unique identifier for the channel, which is used to fetch the data from the RRD file. 
+#     "Name" is the name of the channel that is displayed in the graph. 
+#     "rrd_DS" is the data source name in the RRD file. 
+#     "color" is the color of the line in the graph. 
+#     "Unit" is the unit of measurement for the channel, which is displayed on the vertical axis of the graph.
+#   
+#   "category" is used to group different devices together. This can be useful for organizing the graphs and making it easier to find specific devices.
+#
+#   the file type is png.
+#   
+#   if there are several data in one rrd that should be displayed in separately graphs,
+#   the 'split' section is used to separate different data types for easier management.
+#   split is a list of graphs name and a list of channels that should be displayed in this graph.
+# -----------------------------------------------------------------------------------------------------------------
+Wohnzimmer-4417931C1AE0:
+  category: room                    # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:                         # time intervals for data collection and display. Each entry is a list with two elements: the number of units and the type of unit.
+    - [4, hour]                     # should also displayed in the graphs title. e.g. 'Buero-68C63A87FACE_4_hour' for the device 'Buero-68C63A87FACE' with a time interval of 4 hours.
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: 288ad62606000051            # identifier for the channel, if False = ignore this channel else for future use
+    Name: Aquarium                  # name of the channel that is to be displayed in the legend of the graph. 
+    rrd_DS: temp0                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph. 
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: 28b3ff27060000ae            # identifier for the channel, if False = if False = ignore this channel else for future use
+    Name: Wohnzimmer                # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp1                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#0000FF'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: OutTemp                     # identifier for the channel, if False = ignore this channel else for future use
+    Name: Aussen                    # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp2                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+
+Buero-68C63A87FACE:
+  category: room                    # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: 28aa260619130221            # identifier for the channel, if False = ignore this channel else for future use
+    Name: Fenster                   # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp0                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: 28aa3d1419130212            # identifier for the channel, if False = ignore this channel else for future use
+    Name: Schreibtisch              # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp1                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#0000FF'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: OutTemp                     # identifier for the channel, if False = ignore this channel else for future use
+    Name: Aussen                    # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp2                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+Keller-CC50E33C13D3:
+  category: room                    # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: 28aaa56350140186            # identifier for the channel, if False = ignore this channel else for future use
+    Name: Keller                    # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp0                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: ''                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: False                       # identifier for the channel, if False = ignore this channel else for future use
+    Name: false                     # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp1                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: OutTemp                     # identifier for the channel, if False = ignore this channel else for future use
+    Name: Aussen                    # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp2                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+Schuppen-4417931BFF55:
+  category: room                    # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: 285172bf000000e2            # identifier for the channel, if False = ignore this channel else for future use
+    Name: Schuppen                  # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp0                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: False                       # identifier for the channel, if False = ignore this channel else for future use
+    Name: false                     # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp1                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: OutTemp
+    Name: Aussen                    # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp2                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+Lars-Dach-CC50E33C0671:
+  category: room                    # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: 28ae985e542200862           # identifier for the channel, if False = ignore this channel else for future use
+    Name: Lars-Dach                 # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp0                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: False                       # identifier for the channel, if False = ignore this channel else for future use
+    Name: false                     # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp1                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: OutTemp                     # identifier for the channel, if False = ignore this channel else for future use
+    Name: Aussen                    # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp2                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+Jan-CC50E35DA7A5:
+  category: room                    # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: 28aa565819130281            # identifier for the channel, if False = ignore this channel else for future use
+    Name: Jan                       # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp0                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.  
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: False                       # identifier for the channel, if False = ignore this channel else for future use
+    Name: false                     # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp1                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: OutTemp                     # identifier for the channel, if False = ignore this channel else for future use
+    Name: Aussen                    # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp2                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+Lars-Zimmer-CC50E35DA8F3:
+  category: room                    # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: 28aacffb1813024f            # identifier for the channel, if False = ignore this channel else for future use
+    Name: Lars-Zimmer               # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp0                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: False                       # identifier for the channel, if False = ignore this channel else for future use
+    Name: false                     # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp1                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: OutTemp                     # identifier for the channel, if False = ignore this channel else for future use
+    Name: Aussen                    # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp2                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+Heizung-CC50E33BF64D:
+  category: cellar                  # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: 288b72bb000000e7            # identifier for the channel, if False = ignore this channel else for future use 
+    Name: Vorlauf                   # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp0                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FF0000'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: 28eb43bd00000064            # identifier for the channel, if False = ignore this channel else for future use
+    Name: Rücklauf                  # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp1                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#0000FF'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: OutTemp                     # identifier for the channel, if False = ignore this channel else for future use
+    Name: Aussen                    # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp2                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+Wintergarten-4091514EB45D:
+  category: room                    # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: 28aa3d1419130212            # identifier for the channel, if False = ignore this channel else for future use
+    Name: Wintergarten              # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp0                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: False                       # identifier for the channel, if False = ignore this channel else for future use
+    Name: False                     # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp1                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: OutTemp                     # identifier for the channel, if False = ignore this channel else for future use
+    Name: Aussen                    # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp2                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+Schlafzimmer-DC4F2210C60E:
+  category: room                    # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: 28aa3d1419130212            # identifier for the channel, if False = ignore this channel else for future use
+    Name: Schlafzimmer              # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: temp0                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: False                       # identifier for the channel, if False = ignore this channel else for future use
+    Name: False                     # name of the channel that is to be displayed in the legend of the graph.  
+    rrd_DS: temp1                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: OutTemp                     # identifier for the channel, if False = ignore this channel else for future use
+    Name: Aussen    
+    rrd_DS: temp2                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+weather:
+  category: weather                 # to witch category the device belongs to. this is used for grouping devices together.
+  split:
+    # put channels int separate graphs [graph_name, channel_0, channel_1, ...channel_n]
+    - [weather_temp, channel_0, channel_1, channel_2, channel_3]
+    - [weather_humidity, channel_4]
+    - [weather_pressure, channel_5]
+    - [weather_windspeed, channel_6]
+    - [weather_winddirection, channel_7]
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:    
+    ID: temperatur                  # identifier for the channel, if False = ignore this channel else for future use
+    Name: Temperatur                # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: chan0                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.  
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: temperatur_min              # identifier for the channel, if False = ignore this channel else for future use
+    Name: Temperatur min            # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: chan1                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#0000FF'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: temperatur_max              # identifier for the channel, if False = ignore this channel else for future use
+    Name: Temperatur max            # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: chan2                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FF0000'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_3:
+    ID: feels_like                  # identifier for the channel, if False = ignore this channel else for future use    
+    Name: Feels like                # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: chan3           
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_4:
+    ID: humidity                    # identifier for the channel, if False = ignore this channel else for future use             
+    Name: Humidity                  # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: chan4                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FF00A5'                # color of the line in the graph.
+    Unit: '%'                       # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_5:
+    ID: pressure                    # identifier for the channel, if False = ignore this channel else for future use
+    Name: Pressure      
+    rrd_DS: chan5                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#A500FF'                # color of the line in the graph.  
+    Unit: hPa                       # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_6:
+    ID: windspeed                   # identifier for the channel, if False = ignore this channel else for future use
+    Name: Windspeed                 # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: chan6                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    CDEF: "chan6n=chan6,3.6,*"      # recalculation of the data source value. in this case, the value is multiplied by 3.6 to convert m/s to km/h for better visualization in the graph.     
+    color: '#0FF000'                # color of the line in the graph.
+    Unit: km/h                      # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_7:
+    ID: winddirection               # identifier for the channel, if False = ignore this channel else for future use
+    Name: Winddirection             # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: chan7                   # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FF00FF'                # color of the line in the graph.
+    Unit: Grad                      # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+shellyplug-083A8DF437C7:
+  category: energy                  # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [1, day]
+    - [4, hour]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [5, year]
+  channel_0:
+    ID: Balkonkraftwerk             # identifier for the channel, if False = ignore this channel else for future use
+    Name: shellyplug                # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: verbrauch               # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: Power                     # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+~eth0:
+  category: system                  # to witch category the device belongs to. this is used for grouping devices together.  
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: Tx                        # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds0                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    CDEF: "ds0n=ds0,-1,*"           # recalculation of the data source value. in this case, the value is multiplied by -1 to invert the value for better visualization in the graph.
+    style: 'AREA'
+    color: '#0000FF'                # color of the line in the graph.        
+    Unit: bytes/s                   # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: Rx                        # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds1                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    CDEF: "ds1n=ds1,-1,*"           # recalculation of the data source value. in this case, the value is multiplied by -1 to invert the value for better visualization in the graph.
+    style: 'AREA'
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: 'bytes/s'                 # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+~sda:
+  category: system                  # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: Write                     # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds0                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    CDEF: "ds0n=ds0,-1,*"           # recalculation of the data source value. in this case, the value is multiplied by -1 to invert the value for better visualization in the graph.
+    style: 'AREA'
+    color: '#0000FF'                # color of the line in the graph.
+    Unit: sectors                   # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: Read                      # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds1                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    CDEF: "ds1n=ds1,-1,*"           # recalculation of the data source value. in this case, the value is multiplied by -1 to invert the value for better visualization in the graph.
+    style: 'AREA'
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: sectors                   # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+~sdb:
+  category: system                  # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: Write                     # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds0                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    CDEF: "ds0n=ds0,-1,*"           # recalculation of the data source value. in this case, the value is multiplied by -1 to invert the value for better visualization in the graph.
+    style: 'AREA'
+    color: '#0000FF'                # color of the line in the graph.
+    Unit: sectors                   # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: Read                      # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds1                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    CDEF: "ds1n=ds1,-1,*"           # recalculation of the data source value. in this case, the value is multiplied by -1 to invert the value for better visualization in the graph.
+    style: 'AREA'
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: sectors                   # unit of measurement for the channel, which is displayed on the legend of the graph.
+# -----------------------------------------------------------------------------------------------------------------
+~cpustats:
+  category: system                  # to witch category the device belongs to. this is used for grouping devices together.
+  split:
+    - [~coretemp, channel_0]
+    - [~LoadAvg, channel_1, channel_2, channel_3]
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: coretemp                  # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds0                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file. 
+    color: '#FF0000'                # color of the line in the graph.
+    Unit: '°C'                      # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: '1 Minute Load'           # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds1                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    style: 'AREA'
+    color: '#FF0000'                # color of the line in the graph.
+    Unit: Load 1m                   # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: '5 Minute Load'           # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds2                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    style: 'AREA'
+    color: '#FF9900'                # color of the line in the graph.
+    Unit: Load 5m                   # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_3:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: '15 Minute Load'          # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds3                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    style: 'AREA'
+    color: '#FFFF00'                # color of the line in the graph. 
+    Unit: Load 15m                  # unit of measurement for the channel, which is displayed on the legend of the graph.
+
+# -----------------------------------------------------------------------------------------------------------------
+ToF_Sensor-BCDDC2243BF4:
+  category: other                   # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: ToF-Sensor                  # identifier for the channel, if False = ignore this channel else for future use
+    Name: Time-of-Flight            # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds0                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: mm                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: False                       # identifier for the channel, if False = ignore this channel else for future use
+    Name: false                     # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds1                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: °C                        # unit of measurement for the channel, which is displayed on the legend of the graph.
+
+# -----------------------------------------------------------------------------------------------------------------
+ShellyPStripG4-98A3167B61A0:
+  category: energy                  # to witch category the device belongs to. this is used for grouping devices together.
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [5, year]
+  channel_0:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: 'kleines Licht'           # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds0                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: W                         # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: 'grosses Licht'           # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds1                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#0000FF'                # color of the line in the graph.
+    Unit: W                         # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: 'Heizung'                 # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds2                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FF0000'                # color of the line in the graph.
+    Unit: W                         # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_3:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: 'Filter'                  # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: ds3                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    color: '#FFA500'                # color of the line in the graph.
+    Unit: W                         # unit of measurement for the channel, which is displayed on the legend of the graph. 
+# -----------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------
+# Basisbefehl
+# ---------------------------------------------------------
+base_cmd:
+  - rrdtool
+  - graph
+  - "{pic_path}/{node}_{time_text}.png"
+  - -t
+  - "{node} ({time_text})"
+  - --vertical-label
+  - "{unit}"
+  - -s
+  - "now - {time_count} {time_unit}"
+  - -e
+  - now
+  - -w
+  - "1000"
+  - -h
+  - "300"
+  - --full-size-mode
+  - --border
+  - "0"
+  - --color
+  - "BACK#FFFFFF"
+  - --color
+  - "CANVAS#FFFFFF"
+  - --color
+  - "GRID#DDDDDD"
+  - --color
+  - "MGRID#BBBBBB"
+  - --color
+  - "AXIS#666666"
+  - --color
+  - "FONT#000000"
+  - --grid-dash
+  - "1:3"
+  - --font
+  - "TITLE:12:Arial"
+  - --font
+  - "AXIS:10:Arial"
+  - --font
+  - "LEGEND:9:Arial"
+
+# ---------------------------------------------------------
+# Definitionen
+# ---------------------------------------------------------
+base_def:
+  - "DEF:{rrd_DS}={rrd_path}/{orgnode}.rrd:{rrd_DS}:AVERAGE"
+
+base_vdef:
+  - "VDEF:{rrd_DS}_av={rrd_DS},AVERAGE"
+  - "VDEF:{rrd_DS}_ma={rrd_DS},MAXIMUM"
+  - "VDEF:{rrd_DS}_mi={rrd_DS},MINIMUM"
+  - "VDEF:{rrd_DS}_ak={rrd_DS},LAST"
+
+base_comment:
+  - 'COMMENT:                         Durchschnitt   Maximum   Minimum    aktuell'
+
+base_line:
+  - 'LINE1:{rrd_DS}{color}:{name}{spaces}'
+
+base_area:
+  - 'AREA:{rrd_DS}{color}:{name}{spaces}'
+
+base_gprint:
+  - 'GPRINT:{rrd_DS}_av:%8.2lf'
+  - 'GPRINT:{rrd_DS}_ma:%8.2lf'
+  - 'GPRINT:{rrd_DS}_mi:%8.2lf'
+  - 'GPRINT:{rrd_DS}_ak:%8.2lf'
+
+base_cdef:
+  - CDEF:{CDEF}
+
+# -----------------------------------------------------------------------------------------------------------------
+# idea: how to use standard display definitions for devices?
+#   - questions:
+#     - how to use the same display definitions for different devices?
+#     - how to change different values like "ID" or "Name" for example?
+DS1820_Standard_2_3:
+  TimeText:
+    - [4, hour]
+    - [1, day]
+    - [1, week]
+    - [1, month]
+    - [1, year]
+    - [10, year]
+  channel_0:
+    ID: 28aaa56350140186
+    Name: Keller
+    rrd_DS: temp0
+    color: '#00FF00'
+    Unit: °C
+  channel_1:
+    ID: False
+    Name: false
+    rrd_DS: temp1
+    color: '#00FF00'
+    Unit: °C
+  channel_2:
+    ID: OutTemp
+    Name: Aussen
+    rrd_DS: temp2
+    color: '#FFA500'
+    Unit: °C
+
+
