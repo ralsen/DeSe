@@ -569,7 +569,7 @@ ShellyPStripG4-98A3167B61A0:
     color: '#FFA500'                # color of the line in the graph.
     Unit: W                         # unit of measurement for the channel, which is displayed on the legend of the graph. 
 
-last_diagram: this_device_is_used_to_mark_the_end_of_the_diagram_list
+last_diagram: this_item_is_used_to_mark_the_end_of_the_diagram_list
 # -----------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------
 # Basisbefehl
