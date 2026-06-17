@@ -15,7 +15,7 @@ module_loglevels:
     threadmanager: "INFO"
     threadtools: "INFO"
     weather: "INFO"
-    webserv: "INFO"
+    webserv: "DEBUG"
     
 Timers:
     SystemMonitorSleep: 10
