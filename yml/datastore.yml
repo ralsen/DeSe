@@ -887,6 +887,124 @@ DataStores:
         Power:
             CSV_MODE: 'CHANGE'
 
+    S3PM-001PCEU16:
+        Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
+            TIMEOUT: 180         # time in units defined in config.yml, set both to 0 if no timeout check is needed
+            RELOAD_TIMEOUT: 180  # default time ro reload TIME counter
+            CSV_FORMAT: MULTI
+            YML_FORMAT: SINGLE
+            __WEB__:
+                - ['Powermeter Infos', __Devider, DIV_DATA]
+                - [Name, name, CURRENT_DATA]
+                - [Type, Type, CURRENT_DATA]
+                - ['Power Infos', __Devider, DIV_DATA]
+                - [MAC, mac, CURRENT_DATA]
+                - [Uptime, uptime, CURRENT_DATA]
+                - [Temperature, temperature_c, CURRENT_DATA]
+                - [Total Current, total_current_a, CURRENT_DATA]
+                - [Total Active Power, total_act_power_w, CURRENT_DATA]
+                - [Total Apparent Power, total_aprt_power_va, CURRENT_DATA]
+                - [Total Active Energy, total_act_energy_wh, CURRENT_DATA]
+                - [Total Active Reg. Energy, total_act_reg_energy_wh, CURRENT_DATA]
+                - [Phase A Voltage, a_voltage, CURRENT_DATA]
+                - [Phase A Current, a_current, CURRENT_DATA]
+                - [Phase A Frequency, a_freq, CURRENT_DATA]
+                - [Phase A Active Power, a_act_power, CURRENT_DATA]
+                - [Phase A Apparent Power, a_aprt_power_va, CURRENT_DATA]
+                - [Phase A Power Factor, a_pf, CURRENT_DATA]
+                - [Phase A Total Active Energy, a_total_act_energy_wh, CURRENT_DATA]
+                - [Phase A Total Active Reg. Energy, a_total_act_reg_energy_wh, CURRENT_DATA]
+                - [Phase B Voltage, b_voltage, CURRENT_DATA]
+                - [Phase B Current, b_current, CURRENT_DATA]
+                - [Phase B Frequency, b_freq, CURRENT_DATA]
+                - [Phase B Active Power, b_act_power, CURRENT_DATA]
+                - [Phase B Apparent Power, b_aprt_power_va, CURRENT_DATA]
+                - [Phase B Power Factor, b_pf, CURRENT_DATA]
+                - [Phase B Total Active Energy, b_total_act_energy_wh, CURRENT_DATA]
+                - [Phase B Total Active Reg. Energy, b_total_act_reg_energy_wh, CURRENT_DATA]
+                - [Phase C Voltage, c_voltage, CURRENT_DATA]
+                - [Phase C Current, c_current, CURRENT_DATA]
+                - [Phase C Frequency, c_freq, CURRENT_DATA]
+                - [Phase C Active Power, c_act_power, CURRENT_DATA]
+                - [Phase C Apparent Power, c_aprt_power_va, CURRENT_DATA]
+                - [Phase C Power Factor, c_pf, CURRENT_DATA]
+                - [Phase C Total Active Energy, c_total_act_energy_wh, CURRENT_DATA]
+                - [Phase C Total Active Reg. Energy, c_total_act_reg_energy_wh, CURRENT_DATA]   
+                - [DataStore Statistics, __Devider, DIV_DATA]
+
+        __Devider:
+            DIV_DATA: "- - - - >"
+        name:                 
+            CSV_MODE: 'CHANGE'
+        Type:                 
+            CSV_MODE: 'CHANGE'
+        IP: 
+            CSV_MODE: 'CHANGE'
+        mac: 
+            CSV_MODE: 'CHANGE'
+        uptime:
+            CSV_MODE: 'CHANGE'
+        temperature_c:
+            CSV_MODE: 'CHANGE'
+        total_current_a:
+            CSV_MODE: 'CHANGE'
+        total_act_power_w:
+            CSV_MODE: 'CHANGE'
+        total_aprt_power_va:
+            CSV_MODE: 'CHANGE'
+        total_act_energy_wh:
+            CSV_MODE: 'CHANGE'
+        total_act_reg_energy_wh:
+            CSV_MODE: 'CHANGE'
+        a_voltage:
+            CSV_MODE: 'CHANGE'
+        a_current:
+            CSV_MODE: 'CHANGE'
+        a_freq:
+            CSV_MODE: 'CHANGE'
+        a_act_power:
+            CSV_MODE: 'CHANGE'
+        a_aprt_power_va:
+            CSV_MODE: 'CHANGE'
+        a_pf:
+            CSV_MODE: 'CHANGE'
+        a_total_act_energy_wh:
+            CSV_MODE: 'CHANGE'
+        a_total_act_reg_energy_wh:
+            CSV_MODE: 'CHANGE'
+        b_voltage:
+            CSV_MODE: 'CHANGE'
+        b_current:
+            CSV_MODE: 'CHANGE'
+        b_freq:
+            CSV_MODE: 'CHANGE'
+        b_act_power:
+            CSV_MODE: 'CHANGE'
+        b_aprt_power_va:
+            CSV_MODE: 'CHANGE'
+        b_pf:
+            CSV_MODE: 'CHANGE'
+        b_total_act_energy_wh:
+            CSV_MODE: 'CHANGE'
+        b_total_act_reg_energy_wh:
+            CSV_MODE: 'CHANGE'
+        c_voltage:
+            CSV_MODE: 'CHANGE'
+        c_current:
+            CSV_MODE: 'CHANGE'
+        c_freq:
+            CSV_MODE: 'CHANGE'
+        c_act_power:
+            CSV_MODE: 'CHANGE'
+        c_aprt_power_va:
+            CSV_MODE: 'CHANGE'
+        c_pf:
+            CSV_MODE: 'CHANGE'
+        c_total_act_energy_wh:
+            CSV_MODE: 'CHANGE'
+        c_total_act_reg_energy_wh:
+            CSV_MODE: 'CHANGE'
+
     'S4PL-00416EU':
         Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
             TIMEOUT: 180         # time in units defined in config.yml, set both to 0 if no timeout check is needed
