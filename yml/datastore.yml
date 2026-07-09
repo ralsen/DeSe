@@ -899,13 +899,13 @@ DataStores:
                 - [Type, Type, CURRENT_DATA]
                 - ['Power Infos', __Devider, DIV_DATA]
                 - [MAC, mac, CURRENT_DATA]
-                - [Uptime, uptime, CURRENT_DATA]
+                - [Uptime, uptime_seconds, CURRENT_DATA]
                 - [Temperature, temperature_c, CURRENT_DATA]
                 - [Total Current, total_current_a, CURRENT_DATA]
                 - [Total Active Power, total_act_power_w, CURRENT_DATA]
                 - [Total Apparent Power, total_aprt_power_va, CURRENT_DATA]
                 - [Total Active Energy, total_act_energy_wh, CURRENT_DATA]
-                - [Total Active Reg. Energy, total_act_reg_energy_wh, CURRENT_DATA]
+                - [Total Active Ret. Energy, total_act_ret_energy_wh, CURRENT_DATA]
                 - [Phase A Voltage, a_voltage, CURRENT_DATA]
                 - [Phase A Current, a_current, CURRENT_DATA]
                 - [Phase A Frequency, a_freq, CURRENT_DATA]
@@ -913,7 +913,7 @@ DataStores:
                 - [Phase A Apparent Power, a_aprt_power_va, CURRENT_DATA]
                 - [Phase A Power Factor, a_pf, CURRENT_DATA]
                 - [Phase A Total Active Energy, a_total_act_energy_wh, CURRENT_DATA]
-                - [Phase A Total Active Reg. Energy, a_total_act_reg_energy_wh, CURRENT_DATA]
+                - [Phase A Total Active Ret. Energy, a_total_act_ret_energy_wh, CURRENT_DATA]
                 - [Phase B Voltage, b_voltage, CURRENT_DATA]
                 - [Phase B Current, b_current, CURRENT_DATA]
                 - [Phase B Frequency, b_freq, CURRENT_DATA]
@@ -921,7 +921,7 @@ DataStores:
                 - [Phase B Apparent Power, b_aprt_power_va, CURRENT_DATA]
                 - [Phase B Power Factor, b_pf, CURRENT_DATA]
                 - [Phase B Total Active Energy, b_total_act_energy_wh, CURRENT_DATA]
-                - [Phase B Total Active Reg. Energy, b_total_act_reg_energy_wh, CURRENT_DATA]
+                - [Phase B Total Active Ret. Energy, b_total_act_ret_energy_wh, CURRENT_DATA]
                 - [Phase C Voltage, c_voltage, CURRENT_DATA]
                 - [Phase C Current, c_current, CURRENT_DATA]
                 - [Phase C Frequency, c_freq, CURRENT_DATA]
@@ -929,7 +929,7 @@ DataStores:
                 - [Phase C Apparent Power, c_aprt_power_va, CURRENT_DATA]
                 - [Phase C Power Factor, c_pf, CURRENT_DATA]
                 - [Phase C Total Active Energy, c_total_act_energy_wh, CURRENT_DATA]
-                - [Phase C Total Active Reg. Energy, c_total_act_reg_energy_wh, CURRENT_DATA]   
+                - [Phase C Total Active Ret. Energy, c_total_act_ret_energy_wh, CURRENT_DATA]   
                 - [DataStore Statistics, __Devider, DIV_DATA]
 
         __Devider:
@@ -942,7 +942,7 @@ DataStores:
             CSV_MODE: 'CHANGE'
         mac: 
             CSV_MODE: 'CHANGE'
-        uptime:
+        uptime_seconds:
             CSV_MODE: 'CHANGE'
         temperature_c:
             CSV_MODE: 'CHANGE'
@@ -954,7 +954,7 @@ DataStores:
             CSV_MODE: 'CHANGE'
         total_act_energy_wh:
             CSV_MODE: 'CHANGE'
-        total_act_reg_energy_wh:
+        total_act_ret_energy_wh:
             CSV_MODE: 'CHANGE'
         a_voltage:
             CSV_MODE: 'CHANGE'
@@ -970,7 +970,7 @@ DataStores:
             CSV_MODE: 'CHANGE'
         a_total_act_energy_wh:
             CSV_MODE: 'CHANGE'
-        a_total_act_reg_energy_wh:
+        a_total_act_ret_energy_wh:
             CSV_MODE: 'CHANGE'
         b_voltage:
             CSV_MODE: 'CHANGE'
@@ -986,7 +986,7 @@ DataStores:
             CSV_MODE: 'CHANGE'
         b_total_act_energy_wh:
             CSV_MODE: 'CHANGE'
-        b_total_act_reg_energy_wh:
+        b_total_act_ret_energy_wh:
             CSV_MODE: 'CHANGE'
         c_voltage:
             CSV_MODE: 'CHANGE'
@@ -1002,7 +1002,7 @@ DataStores:
             CSV_MODE: 'CHANGE'
         c_total_act_energy_wh:
             CSV_MODE: 'CHANGE'
-        c_total_act_reg_energy_wh:
+        c_total_act_ret_energy_wh:
             CSV_MODE: 'CHANGE'
 
     'S4PL-00416EU':
