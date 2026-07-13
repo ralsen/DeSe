@@ -376,7 +376,7 @@ class Service:
             ]
             err = subprocess.run(cmd, capture_output=True, text=True) 
             if err.returncode != 0:
-                logger.warning(f'write RRD failed: {rrdfile} - {rrdstr}. Error: {err}')
+                logger.warning(f'write RRD failed: {rrdfile} - {rrdstr} -> Error: {err}')
         return    
 
     def getRRDValue(self, DBStr: str):
@@ -398,7 +398,7 @@ class Service:
             except:
                 logger.warning(f"File not found: {self.cfg['DataPath']}{value}")
         # print('getRRDValue (store): ', store, ' - ', value)
-        return value
+        return str(value).split('.')[0]
 
     def writeDataSet(self, Shelf: str, line: str):
         timestamp_obj = datetime.datetime.fromisoformat(self.ds[self.MyName]['Commons']['initTime'])
