@@ -168,7 +168,7 @@ class webserverHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         self.service = self.cfg['__Dstore__'].ds
-        logger.debug(f"POST Headers: {self.service}")
+        #logger.debug(f"POST Headers: {self.service}")
         try:
             content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
             post_data = self.rfile.read(content_length) # <--- Gets the data itself
