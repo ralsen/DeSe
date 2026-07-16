@@ -26,26 +26,26 @@ Timers:
     mainloop_sleep: 150
 
 pathes:
-    DATA: '/data'                 # not used yet
-    LOG: '/log'
-    RRD: '/rrd'
-    YML: '/yml'
-    PNG: '/png'
-    ARCH: '/archiv'
-    SCENE: '/Scenes'
-    PROG: '/prog'
-    HTML: '/html'
-    IPAdr: '/IPAdr'
-    TEMPLATE: '/progs/templates'
+    DATA: 'data'                 # not used yet
+    LOG: 'log'
+    RRD: 'rrd'
+    YML: 'yml'
+    PNG: 'png'
+    ARCH: 'archiv'
+    SCENE: 'Scenes'
+    PROG: 'prog'
+    HTML: 'html'
+    IPAdr: 'IPAdr'
+    TEMPLATE: 'progs/templates'
 
 DeSeTask:
     Linux:
-    - ['./UpdMemoryRrd.sh', 1]
-    - ['./UpdLoadAvgRrd.sh', 1]
-    - ['./UpdNetworkRrd.sh', 1]
-    - ['./UpdCoreTempRrd.sh', 1]
-    - ['./UpdDiskTraf.sh', 1]
-    - ['./MakeAllGraphs.sh', 20]
+    - ['./progs/UpdMemoryRrd.sh', 1]
+    - ['./progs/UpdLoadAvgRrd.sh', 1]
+    - ['./progs/UpdNetworkRrd.sh', 1]
+    - ['./progs/UpdCoreTempRrd.sh', 1]
+    - ['./progs/UpdDiskTraf.sh', 1]
+    - ['./progs/MakeAllGraphs.sh', 20]
 
     Darwin:
     #- ['/Users/ralphfollrichs/Projects/dabo/progs/UpdAllMac.sh', 5]
