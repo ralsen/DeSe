@@ -1,5 +1,6 @@
 #!/bin/bash
-rrdPath=$(pwd)/../rrd
+# later rrdPath should be given as parameter
+rrdPath=$(pwd)/rrd
 
 ASDA1=$(grep sda1 /proc/diskstats)
 ASDA1READ=$(echo $ASDA1|tr \: \ |awk '{print $6}')

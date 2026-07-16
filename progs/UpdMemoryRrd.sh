@@ -1,8 +1,8 @@
 #!/bin/bash
-
+# later rrdPath should be given as parameter
 # die Daten rund um RAM und SWAP kommen aus /proc/meminfo
 # freier RAM
-rrdPath=$(pwd)/../rrd
+rrdPath=$(pwd)/rrd
 
 FRAM=`grep MemFree: /proc/meminfo|tr -s [:blank:]|cut -f2 -d" "`
 # freier Swap

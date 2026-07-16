@@ -1,5 +1,6 @@
 #!/bin/bash
-rrdPath=$(pwd)/../rrd
+# later rrdPath should be given as parameter
+rrdPath=$(pwd)/rrd
 
 AETH0=$(grep eth0 /proc/net/dev)
 AE0DOWN=$(echo $AETH0|tr \: \ |awk '{print $2}')
