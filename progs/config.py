@@ -7,6 +7,8 @@ import datetime
 import os
 import time
 import platform
+from pathlib import Path
+
 
 import DataStore as ds
 import DeSeTimer as dt
@@ -38,25 +40,26 @@ class InitManager:
 
     def load_init(self):
         ini = self.ini
-        current_dir = os.getcwd()
-        current_dir += '/..'
+        current_dir = Path.cwd()
         self.ini['wd'] = current_dir
-        with open(f'{current_dir}/yml/config.yml', 'r') as ymlfile:
+        config_path = os.path.join(current_dir, 'yml', 'config.yml')
+        diagram_path = os.path.join(current_dir, 'yml', 'diagrams.yml')
+        
+        with open(config_path, 'r') as ymlfile:
             confyml = yaml.safe_load(ymlfile)
 
-        with open(f'{current_dir}/yml/diagrams.yml', 'r') as ymlfile:
-            self.dias = yaml.safe_load(ymlfile)
+        with open(diagram_path, 'r') as diaymlfile:
+            self.dias = yaml.safe_load(diaymlfile)
 
-        RootPath = current_dir #confyml['ROOT_PATH']
         ini['dias'] = self.dias
         ini['StartTime'] = str(datetime.datetime.now())
         ini['confyml'] = confyml
-        ini['LogPath'] = RootPath + confyml['pathes']['LOG']
-        ini['DataPath'] = RootPath + confyml['pathes']['DATA']
-        ini['RRDPath'] = RootPath + confyml['pathes']['RRD']
-        ini['YMLPath'] = RootPath + confyml['pathes']['YML']
-        ini['PNGPath'] = RootPath + confyml['pathes']['PNG']
-        ini['TMPPath'] = RootPath + confyml['pathes']['TEMPLATE']
+        ini['LogPath'] = current_dir / confyml['pathes']['LOG']
+        ini['DataPath'] = current_dir  / confyml['pathes']['DATA']
+        ini['RRDPath'] = current_dir / confyml['pathes']['RRD']
+        ini['YMLPath'] = current_dir / confyml['pathes']['YML']
+        ini['PNGPath'] = current_dir / confyml['pathes']['PNG']
+        ini['TMPPath'] = current_dir / confyml['pathes']['TEMPLATE']
         ini['DeSePort'] = confyml['Communication']['DevServerPort']
         ini['DeSeName'] = confyml['Communication']['DevServerName']
         ini['debugdatefmt'] = confyml['debug']['datefmt']
