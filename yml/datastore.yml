@@ -887,75 +887,6 @@ DataStores:
         Power:
             CSV_MODE: 'CHANGE'
 
-#rrdtool create shelly_pro3em_test.rrd   --step 60   DS:uptime:GAUGE:120:U:U   DS:temp_c:GAUGE:120:U:U   DS:tot_curr:GAUGE:120:U:U   DS:tot_pwr_w:GAUGE:120:U:U   DS:tot_pwr_va:GAUGE:120:U:U   DS:tot_eng_wh:DERIVE:120:U:U   DS:tot_ret_wh:DERIVE:120:U:U   DS:a_volt:GAUGE:120:U:U   DS:a_curr:GAUGE:120:U:U   DS:a_freq:GAUGE:120:U:U   DS:a_pwr:GAUGE:120:U:U   DS:a_pwr_va:GAUGE:120:U:U   DS:a_pf:GAUGE:120:U:U   DS:a_eng_wh:DERIVE:120:U:U   DS:a_ret_wh:DERIVE:120:U:U   DS:b_volt:GAUGE:120:U:U   DS:b_curr:GAUGE:120:U:U   DS:b_freq:GAUGE:120:U:U   DS:b_pwr:GAUGE:120:U:U   DS:b_pwr_va:GAUGE:120:U:U   DS:b_pf:GAUGE:120:U:U   DS:b_eng_wh:DERIVE:120:U:U   DS:b_ret_wh:DERIVE:120:U:U   DS:c_volt:GAUGE:120:U:U   DS:c_curr:GAUGE:120:U:U   DS:c_freq:GAUGE:120:U:U   DS:c_pwr:GAUGE:120:U:U   DS:c_pwr_va:GAUGE:120:U:U   DS:c_pf:GAUGE:120:U:U   DS:c_eng_wh:DERIVE:120:U:U   DS:c_ret_wh:DERIVE:120:U:U   RRA:AVERAGE:0.5:1:10080   RRA:AVERAGE:0.5:5:8640   RRA:AVERAGE:0.5:15:8640   RRA:AVERAGE:0.5:60:8760   RRA:AVERAGE:0.5:120:8760   RRA:AVERAGE:0.5:240:6570   RRA:AVERAGE:0.5:360:5840   RRA:AVERAGE:0.5:720:3650   RRA:AVERAGE:0.5:1440:3650   RRA:MAX:0.5:1:10080   RRA:MAX:0.5:5:8640   RRA:MAX:0.5:15:8640   RRA:MAX:0.5:60:8760   RRA:MAX:0.5:120:8760   RRA:MAX:0.5:240:6570   RRA:MAX:0.5:360:5840   RRA:MAX:0.5:720:3650   RRA:MAX:0.5:1440:3650   RRA:MIN:0.5:1:10080   RRA:MIN:0.5:5:8640   RRA:MIN:0.5:15:8640   RRA:MIN:0.5:60:8760   RRA:MIN:0.5:120:8760   RRA:MIN:0.5:240:6570   RRA:MIN:0.5:360:5840   RRA:MIN:0.5:720:3650   RRA:MIN:0.5:1440:3650
-# rrdtool create shelly_pro3em_all.rrd   --step 60   
-#                   DS:uptime:GAUGE:120:U:U   
-#                   DS:temp_c:GAUGE:120:U:U   
-#                   DS:tot_curr:GAUGE:120:U:U   
-#                   DS:tot_pwr_w:GAUGE:120:U:U   
-#                   DS:tot_pwr_va:GAUGE:120:U:U   
-#                   DS:tot_eng_wh:COUNTER:120:U:U   
-#                   DS:tot_ret_wh:COUNTER:120:U:U   
-#                   DS:a_volt:GAUGE:120:U:U   
-#                   DS:a_curr:GAUGE:120:U:U   
-#                   DS:a_freq:GAUGE:120:U:U   
-#                   DS:a_pwr:GAUGE:120:U:U   
-#                   DS:a_pwr_va:GAUGE:120:U:U   
-#                   DS:a_pf:GAUGE:120:U:U   
-#                   DS:a_eng_wh:COUNTER:120:U:U   
-#                   DS:a_ret_wh:COUNTER:120:U:U   
-#                   DS:b_volt:GAUGE:120:U:U   
-#                   DS:b_curr:GAUGE:120:U:U   
-#                   DS:b_freq:GAUGE:120:U:U   
-#                   DS:b_pwr:GAUGE:120:U:U   
-#                   DS:b_pwr_va:GAUGE:120:U:U   
-#                   DS:b_pf:GAUGE:120:U:U   
-#                   DS:b_eng_wh:COUNTER:120:U:U   
-#                   DS:b_ret_wh:COUNTER:120:U:U   
-#                   DS:c_volt:GAUGE:120:U:U   
-#                   DS:c_curr:GAUGE:120:U:U   
-#                   DS:c_freq:GAUGE:120:U:U   
-#                   DS:c_pwr:GAUGE:120:U:U   
-#                   DS:c_pwr_va:GAUGE:120:U:U   
-#                   DS:c_pf:GAUGE:120：U：U   
-#                   DS:c_eng_wh:COUNTER:120：U：U   
-#                   DS:c_ret_wh:COUNTER:120：U：U       
-#                   N:
-#                   321526:
-#                   41.9:
-#                   1.423:
-#                   251.801:
-#                   311.454:
-#                   161251.0:
-#                   11277.5:
-#                   0.0:
-#                   0.027:
-#                   0.0:
-#                   0.0:
-#                   None:
-#                   0.0:
-#                   0.03:
-#                   0.0:
-#                   0.0:
-#                   0.027:
-#                   0.0:
-#                   0.0:
-#                   None:
-#                   0.0:
-#                   0.03:
-#                   0.0:
-#                   227.6:
-#                   1.369:
-#                   50.0:
-#                   251.8:
-#                   None:
-#                   0.78:
-#                   161250.94:
-#                   11277.5
-
-# N:407111:42.0:1.619:185.637:362.998:165370.46:11836.35:0.0:0.027:0.0:0.0:None:0.0:0.03:0.0:0.0:0.027:0.0:0.0:None:0.0:0.03:0.0:232.1:1.565:50.0:185.6:None:0.5:165370.4:11836.35
-# N:407106:42.1:1.618:183.282:362.712:165370.46:11836.35:0.0:0.028:0.0:0.0:None:0.0:0.03:0.0:0.0:0.027:0.0:0.0:None:0.0:0.03:0.0:232.1:1.563:50.0:183.3:None:0.51:165370.4:11836.35
-
     S3PM-001PCEU16:
         Commons:                 # these are Values for the messages/Datasets, they are mandatory and must have always the same names
             TIMEOUT: 180         # time in units defined in config.yml, set both to 0 if no timeout check is needed
@@ -999,15 +930,16 @@ DataStores:
                 - ['Powermeter Infos', __Devider, DIV_DATA]
                 - [Name, name, CURRENT_DATA]
                 - [Type, Type, CURRENT_DATA]
-                - ['Power Infos', __Devider, DIV_DATA]
                 - [MAC, mac, CURRENT_DATA]
                 - [Uptime, uptime_seconds, CURRENT_DATA]
                 - [Temperature, temperature_c, CURRENT_DATA]
-                - [Total Current, total_current_a, CURRENT_DATA]
-                - [Total Active Power, total_act_power_w, CURRENT_DATA]
-                - [Total Apparent Power, total_aprt_power_va, CURRENT_DATA]
-                - [Total Active Energy, total_act_energy_wh, CURRENT_DATA]
+                - [Total Values, __Devider, DIV_DATA]
+                - [Current, total_current_a, CURRENT_DATA]
+                - [Active Power, total_act_power_w, CURRENT_DATA]
+                - [Apparent Power, total_aprt_power_va, CURRENT_DATA]
+                - [Active Energy, total_act_energy_wh, CURRENT_DATA]
                 - [Total Active Ret. Energy, total_act_ret_energy_wh, CURRENT_DATA]
+                - [Phase A Values, __Devider, DIV_DATA]
                 - [Phase A Voltage, a_voltage, CURRENT_DATA]
                 - [Phase A Current, a_current, CURRENT_DATA]
                 - [Phase A Frequency, a_freq, CURRENT_DATA]
@@ -1016,6 +948,7 @@ DataStores:
                 - [Phase A Power Factor, a_pf, CURRENT_DATA]
                 - [Phase A Total Active Energy, a_total_act_energy_wh, CURRENT_DATA]
                 - [Phase A Total Active Ret. Energy, a_total_act_ret_energy_wh, CURRENT_DATA]
+                - [Phase B Values, __Devider, DIV_DATA]
                 - [Phase B Voltage, b_voltage, CURRENT_DATA]
                 - [Phase B Current, b_current, CURRENT_DATA]
                 - [Phase B Frequency, b_freq, CURRENT_DATA]
@@ -1024,6 +957,7 @@ DataStores:
                 - [Phase B Power Factor, b_pf, CURRENT_DATA]
                 - [Phase B Total Active Energy, b_total_act_energy_wh, CURRENT_DATA]
                 - [Phase B Total Active Ret. Energy, b_total_act_ret_energy_wh, CURRENT_DATA]
+                - [Phase C Values, __Devider, DIV_DATA]
                 - [Phase C Voltage, c_voltage, CURRENT_DATA]
                 - [Phase C Current, c_current, CURRENT_DATA]
                 - [Phase C Frequency, c_freq, CURRENT_DATA]
