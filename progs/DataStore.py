@@ -163,7 +163,10 @@ class Service:
         self.ds[self.MyName]['Commons']['TIMEOUT'] = self.ds[self.MyName]['Commons']['RELOAD_TIMEOUT']
         self.ds[self.MyName]['Commons']['lastUPD'] = str(datetime.datetime.now())
         
-        self.ds['~DaBo']['updated DataSets']['CURRENT_DATA'] += 1
+        if self.MyName != '~DaBo': # dont count yourself
+            self.ds['~DaBo']['last sender']['CURRENT_DATA'] = self.MyName
+            self.ds['~DaBo']['Commons']['lastUPD'] = str(datetime.datetime.now())
+            self.ds['~DaBo']['updated DataSets']['CURRENT_DATA'] += 1
         
         for StoreShelf in DataSet:
             if StoreShelf == 'Commons':
@@ -238,10 +241,7 @@ class Service:
             return None
         
         if self.MyName != '~DaBo': # dont count yourself
-            self.ds['~DaBo']['last sender']['CURRENT_DATA'] = self.MyName
-            self.ds['~DaBo']['Commons']['lastUPD'] = str(datetime.datetime.now())
             self.ds['~DaBo']['Commons']['Counter'] += 1
-            
             if oldDataBoxValue != DataBoxValue:
                 self.ds['~DaBo']['changed Data']['CURRENT_DATA'] += 1
             
