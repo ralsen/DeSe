@@ -32,7 +32,8 @@ if __name__ == '__main__':
     try:
         ws.webserverHandler.set_cfg(ws.webserverHandler, cfg)
         logger.info(f'Trying to start Device server: http://{ServerName}:{ServerPort}')
-        server = ThreadingHTTPServer((ServerName, ServerPort), ws.webserverHandler)
+        #server = ThreadingHTTPServer((ServerName, ServerPort), ws.webserverHandler)
+        server = ThreadingHTTPServer(('', ServerPort), ws.webserverHandler)
     except Exception as err:
         logger.error(f"Could not listen on http://{ServerName}:{ServerPort} -> {err}")
         logger.error("!!! Terminate program !!!")
