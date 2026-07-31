@@ -1,0 +1,19 @@
+[Unit]
+Description=device Server
+After=network.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/projects/dese
+
+ExecStartPre=/bin/sleep 5
+ExecStart=/home/pi/projects/dese/.env/bin/python progs/dese.py
+
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

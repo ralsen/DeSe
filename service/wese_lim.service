@@ -1,0 +1,18 @@
+[Unit]
+Description=device Server
+After=network.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/projects/dese/progs
+ExecStartPre=/bin/sleep 5
+ExecStart=node wese.js
+
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
