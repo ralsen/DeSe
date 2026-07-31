@@ -56,7 +56,7 @@ DeSeTask:
     - ['/Users/ralphfollrichs/Projects/dabo/progs/all.sh', 1800]
 
 Communication:
-    DevServerName: 'TestPi.local'   #FOL: the should know who is the DevServer, but we need to find out how to get the hostname of the DevServer automatically. Maybe we can use the hostname of the DevServer and then add ".local" to it. This would be a good solution, because then we don't have to change this config.yml file on every Pi. 
+    DevServerName: 'MacBook-Air-Ralph.local'   #FOL: the should know who is the DevServer, but we need to find out how to get the hostname of the DevServer automatically. Maybe we can use the hostname of the DevServer and then add ".local" to it. This would be a good solution, because then we don't have to change this config.yml file on every Pi. 
     DevServerPort: 8080
     DaBoServerPort: 8088    #FOL: do we need this anymore? It is not used in the code, but it is in the config.yml. I think we can remove it.
 
