@@ -92,10 +92,16 @@ class SystemMonitoring:
                 disk_io = psutil.disk_io_counters(perdisk=True)
                 sda = disk_io.get("sda") #this is the backup drive
                 sdb = disk_io.get("sdb") #this is the samba drive
-                sda_data["~sda"]["read"] = sda.read_bytes
-                sda_data["~sda"]["write"] = sda.write_bytes
-                sdb_data["~sdb"]["read"] = sdb.read_bytes
-                sdb_data["~sdb"]["write"] = sdb.write_bytes
+                try:
+                    sda_data["~sda"]["read"] = sda.read_bytes
+                    sda_data["~sda"]["write"] = sda.write_bytes
+                    sdb_data["~sdb"]["read"] = sdb.read_bytes
+                    sdb_data["~sdb"]["write"] = sdb.write_bytes
+                except Exception as e:
+                    sda_data["~sda"]["read"] = 0
+                    sda_data["~sda"]["write"] = 0
+                    sdb_data["~sdb"]["read"] = 0
+                    sdb_data["~sdb"]["write"] = 0
             else:
                 sdb_data["~sdb"]["read"] = 2 * tx
                 sdb_data["~sdb"]["write"] = rx
