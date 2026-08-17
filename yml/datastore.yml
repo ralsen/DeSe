@@ -895,59 +895,59 @@ DataStores:
             YML_FORMAT: SINGLE
             __RRD_DB__:
                 -   [[OUTFILE, §Commons, Store],
-                    [SELF, §uptime_seconds, CURRENT_DATA],
-                    [SELF, §temperature_c, CURRENT_DATA],
-                    [SELF, §total_current_a, CURRENT_DATA],
-                    [SELF, §total_act_power_w, CURRENT_DATA],
-                    [SELF, §total_aprt_power_va, CURRENT_DATA],
-                    [SELF, §total_act_energy_wh, CURRENT_DATA],
-                    [SELF, §total_act_ret_energy_wh, CURRENT_DATA],
+                    [SELF, §uptime, CURRENT_DATA],
+                    [SELF, §temperature_tC, CURRENT_DATA],
+                    [SELF, §total_current, CURRENT_DATA],
+                    [SELF, §total_act_power, CURRENT_DATA],
+                    [SELF, §total_aprt_power, CURRENT_DATA],
+                    [SELF, §total_act, CURRENT_DATA],
+                    [SELF, §total_act_ret, CURRENT_DATA],
                     [SELF, §a_voltage, CURRENT_DATA],
                     [SELF, §a_current, CURRENT_DATA],
                     [SELF, §a_freq, CURRENT_DATA],
                     [SELF, §a_act_power, CURRENT_DATA],
-                    [SELF, §a_aprt_power_va, CURRENT_DATA],
+                    [SELF, §a_aprt_power, CURRENT_DATA],
                     [SELF, §a_pf, CURRENT_DATA],
-                    [SELF, §a_total_act_energy_wh, CURRENT_DATA],
-                    [SELF, §a_total_act_ret_energy_wh, CURRENT_DATA],
+                    [SELF, §a_total_act_energy, CURRENT_DATA],
+                    [SELF, §a_total_ret_energy, CURRENT_DATA],
                     [SELF, §b_voltage, CURRENT_DATA],
                     [SELF, §b_current, CURRENT_DATA],
                     [SELF, §b_freq, CURRENT_DATA],
                     [SELF, §b_act_power, CURRENT_DATA],
-                    [SELF, §b_aprt_power_va, CURRENT_DATA],
+                    [SELF, §b_aprt_power, CURRENT_DATA],
                     [SELF, §b_pf, CURRENT_DATA],
-                    [SELF, §b_total_act_energy_wh, CURRENT_DATA],
-                    [SELF, §b_total_act_ret_energy_wh, CURRENT_DATA],
+                    [SELF, §b_total_act_energy, CURRENT_DATA],
+                    [SELF, §b_total_ret_energy, CURRENT_DATA],
                     [SELF, §c_voltage, CURRENT_DATA],
                     [SELF, §c_current, CURRENT_DATA],
                     [SELF, §c_freq, CURRENT_DATA],
                     [SELF, §c_act_power, CURRENT_DATA],
-                    [SELF, §c_aprt_power_va, CURRENT_DATA],
+                    [SELF, §c_aprt_power, CURRENT_DATA],
                     [SELF, §c_pf, CURRENT_DATA],
-                    [SELF, §c_total_act_energy_wh, CURRENT_DATA],
-                    [SELF, §c_total_act_ret_energy_wh, CURRENT_DATA]]      # channel 0 in rrd
+                    [SELF, §c_total_act_energy, CURRENT_DATA],
+                    [SELF, §c_total_ret_energy, CURRENT_DATA]]      # channel 0 in rrd
             __WEB__:
                 - ['Powermeter Infos', __Devider, DIV_DATA]
                 - [Name, name, CURRENT_DATA]
                 - [Type, Type, CURRENT_DATA]
                 - [MAC, mac, CURRENT_DATA]
-                - [Uptime, uptime_seconds, CURRENT_DATA]
-                - [Temperature, temperature_c, CURRENT_DATA]
+                - [Uptime, uptime, CURRENT_DATA]
+                - [Temperature, temperature_tC, CURRENT_DATA]
                 - [Total Values, __Devider, DIV_DATA]
-                - [Current, total_current_a, CURRENT_DATA]
-                - [Active Power, total_act_power_w, CURRENT_DATA]
-                - [Apparent Power, total_aprt_power_va, CURRENT_DATA]
-                - [Active Energy, total_act_energy_wh, CURRENT_DATA]
-                - [Total Active Ret. Energy, total_act_ret_energy_wh, CURRENT_DATA]
+                - [Current, total_current, CURRENT_DATA]
+                - [Active Power, total_act_power, CURRENT_DATA]
+                - [Apparent Power, total_aprt_power, CURRENT_DATA]
+                - [Active Energy, total_act, CURRENT_DATA]
+                - [Total Active Ret. Energy, total_act_ret, CURRENT_DATA]
                 - [Phase A Values, __Devider, DIV_DATA]
                 - [Phase A Voltage, a_voltage, CURRENT_DATA]
                 - [Phase A Current, a_current, CURRENT_DATA]
                 - [Phase A Frequency, a_freq, CURRENT_DATA]
                 - [Phase A Active Power, a_act_power, CURRENT_DATA]
-                - [Phase A Apparent Power, a_aprt_power_va, CURRENT_DATA]
+                - [Phase A Apparent Power, a_aprt_power, CURRENT_DATA]
                 - [Phase A Power Factor, a_pf, CURRENT_DATA]
-                - [Phase A Total Active Energy, a_total_act_energy_wh, CURRENT_DATA]
-                - [Phase A Total Active Ret. Energy, a_total_act_ret_energy_wh, CURRENT_DATA]
+                - [Phase A Total Active Energy, a_total_act_energy, CURRENT_DATA]
+                - [Phase A Total Active Ret. Energy, a_total_ret_energy, CURRENT_DATA]
                 - [Phase B Values, __Devider, DIV_DATA]
                 - [Phase B Voltage, b_voltage, CURRENT_DATA]
                 - [Phase B Current, b_current, CURRENT_DATA]
@@ -955,8 +955,8 @@ DataStores:
                 - [Phase B Active Power, b_act_power, CURRENT_DATA]
                 - [Phase B Apparent Power, b_aprt_power_va, CURRENT_DATA]
                 - [Phase B Power Factor, b_pf, CURRENT_DATA]
-                - [Phase B Total Active Energy, b_total_act_energy_wh, CURRENT_DATA]
-                - [Phase B Total Active Ret. Energy, b_total_act_ret_energy_wh, CURRENT_DATA]
+                - [Phase B Total Active Energy, b_total_act_energy, CURRENT_DATA]
+                - [Phase B Total Active Ret. Energy, b_total_ret_energy, CURRENT_DATA]
                 - [Phase C Values, __Devider, DIV_DATA]
                 - [Phase C Voltage, c_voltage, CURRENT_DATA]
                 - [Phase C Current, c_current, CURRENT_DATA]
@@ -965,7 +965,7 @@ DataStores:
                 - [Phase C Apparent Power, c_aprt_power_va, CURRENT_DATA]
                 - [Phase C Power Factor, c_pf, CURRENT_DATA]
                 - [Phase C Total Active Energy, c_total_act_energy_wh, CURRENT_DATA]
-                - [Phase C Total Active Ret. Energy, c_total_act_ret_energy_wh, CURRENT_DATA]   
+                - [Phase C Total Active Ret. Energy, c_total_ret_energy, CURRENT_DATA]   
                 - [DataStore Statistics, __Devider, DIV_DATA]
 
         __Devider:
@@ -978,19 +978,19 @@ DataStores:
             CSV_MODE: 'CHANGE'
         mac: 
             CSV_MODE: 'CHANGE'
-        uptime_seconds:
+        uptime:
             CSV_MODE: 'CHANGE'
-        temperature_c:
+        temperature_tC:
             CSV_MODE: 'CHANGE'
-        total_current_a:
+        total_current:
             CSV_MODE: 'CHANGE'
-        total_act_power_w:
+        total_act_power:
             CSV_MODE: 'CHANGE'
-        total_aprt_power_va:
+        total_aprt_power:
             CSV_MODE: 'CHANGE'
-        total_act_energy_wh:
+        total_act:
             CSV_MODE: 'CHANGE'
-        total_act_ret_energy_wh:
+        total_act_ret:
             CSV_MODE: 'CHANGE'
         a_voltage:
             CSV_MODE: 'CHANGE'
@@ -1000,13 +1000,13 @@ DataStores:
             CSV_MODE: 'CHANGE'
         a_act_power:
             CSV_MODE: 'CHANGE'
-        a_aprt_power_va:
+        a_aprt_power:
             CSV_MODE: 'CHANGE'
         a_pf:
             CSV_MODE: 'CHANGE'
-        a_total_act_energy_wh:
+        a_total_act_energy:
             CSV_MODE: 'CHANGE'
-        a_total_act_ret_energy_wh:
+        a_total_ret_energy:
             CSV_MODE: 'CHANGE'
         b_voltage:
             CSV_MODE: 'CHANGE'
@@ -1016,13 +1016,13 @@ DataStores:
             CSV_MODE: 'CHANGE'
         b_act_power:
             CSV_MODE: 'CHANGE'
-        b_aprt_power_va:
+        b_aprt_power:
             CSV_MODE: 'CHANGE'
         b_pf:
             CSV_MODE: 'CHANGE'
-        b_total_act_energy_wh:
+        b_total_act_energy:
             CSV_MODE: 'CHANGE'
-        b_total_act_ret_energy_wh:
+        b_total_ret_energy:
             CSV_MODE: 'CHANGE'
         c_voltage:
             CSV_MODE: 'CHANGE'
@@ -1032,13 +1032,13 @@ DataStores:
             CSV_MODE: 'CHANGE'
         c_act_power:
             CSV_MODE: 'CHANGE'
-        c_aprt_power_va:
+        c_aprt_power:
             CSV_MODE: 'CHANGE'
         c_pf:
             CSV_MODE: 'CHANGE'
-        c_total_act_energy_wh:
+        c_total_act_energy:
             CSV_MODE: 'CHANGE'
-        c_total_act_ret_energy_wh:
+        c_total_ret_energy:
             CSV_MODE: 'CHANGE'
 
     'S4PL-00416EU':
