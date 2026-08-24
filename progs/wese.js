@@ -80,13 +80,13 @@ app.get('/draw', (req, res) => {
     logger.info('da will einer ne grafik: ' + req.url);
     logger.info(paraArray);
     res.json('habs bekommen');
-    exec('python3 draw.py ' + JSON.stringify(paraArray), (err, stdout, stderr) => {
-      if (err) {
-        console.error(`Fehler: ${err}`);
-        return;
-      }
-      console.log(`Ausgabe: ${stdout}`);
-    });
+//    exec('python3 draw.py ' + JSON.stringify(paraArray), (err, stdout, stderr) => {
+//      if (err) {
+//        console.error(`Fehler: ${err}`);
+//        return;
+//      }
+//      console.log(`Ausgabe: ${stdout}`);
+///home/pi/projects/dese    });
   });
 
 app.get('/yml', (req, res) => {

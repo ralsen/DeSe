@@ -161,6 +161,7 @@ class webserverHandler(BaseHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Headers', 'Content-Type')
             self.end_headers()
             self.wfile.write(json.dumps(message).encode())           
+            logger.debug(f"Response sent for path: {self.path} with message: {message}")
             return
 
         except IOError:
@@ -174,7 +175,7 @@ class webserverHandler(BaseHTTPRequestHandler):
             post_data = self.rfile.read(content_length) # <--- Gets the data itself
             dict_str = post_data.decode('UTF-8')
             data = json.loads(dict_str)
-            logger.debug(f"receiving: {data}")
+            #logger.debug(f"receiving: {data}")
             self.send_response(301)
             self.send_header('Content-Type', 'text/html')
             self.end_headers()
