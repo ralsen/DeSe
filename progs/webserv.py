@@ -187,7 +187,7 @@ class webserverHandler(BaseHTTPRequestHandler):
                 data['name']
                 data['Type']
             except Exception as err:
-                logger.info(f"no 'name' or 'Type' specified: {err}")
+                logger.info(f"no 'name' or 'Type' specified: {err}\nin this dataset\n{data}")
             finally:
                 logger.debug(f"received data from : {data['name']}")
                 if data['name'] not in self.service:
