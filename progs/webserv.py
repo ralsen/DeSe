@@ -196,7 +196,7 @@ class webserverHandler(BaseHTTPRequestHandler):
                 self.service[data['name']]['__Service__'].handle_DataSet(dataset)
         except Exception as err:
             self.send_error(404, f'Not part of the Datastore: {err}')
-            logger.warning(f"Not part of the Datastore: {err}")
+            #logger.warning(f"Not part of the Datastore: {err}")
     
     def doCommand(self, params):
         logger.debug(f"receiving: {params}")
