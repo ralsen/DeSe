@@ -142,7 +142,6 @@ DataStores:
                 - [APName, APName, CURRENT_DATA]
                 - [MAC, MAC, CURRENT_DATA]
                 - [TransmitCycle, TransmitCycle, CURRENT_DATA]
-                - [MeasuringCycle, MeasuringCycle, CURRENT_DATA]
                 - [Hash, Hash, CURRENT_DATA]
                 - [Size, Size, CURRENT_DATA]
                 - [PageReload, PageReload, CURRENT_DATA]
@@ -184,8 +183,6 @@ DataStores:
             CSV_MODE: 'CHANGE'
         TransmitCycle:
             CURRENT_DATA: 20
-            CSV_MODE: 'CHANGE'
-        MeasuringCycle:
             CSV_MODE: 'CHANGE'
         Hash:
             CSV_MODE: 'CHANGE'
