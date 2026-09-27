@@ -414,7 +414,6 @@ shellyplug-083A8DF437C7:
     ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
     Name: Rx                        # name of the channel that is to be displayed in the legend of the graph.
     rrd_DS: ds1                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
-    CDEF: "ds1n=ds1,-1,*"           # recalculation of the data source value. in this case, the value is multiplied by -1 to invert the value for better visualization in the graph.
     style: 'AREA'
     color: '#00FF00'                # color of the line in the graph.
     Unit: 'bytes/s'                 # unit of measurement for the channel, which is displayed on the legend of the graph.
@@ -440,7 +439,6 @@ shellyplug-083A8DF437C7:
     ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
     Name: Read                      # name of the channel that is to be displayed in the legend of the graph.
     rrd_DS: ds1                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
-    CDEF: "ds1n=ds1,-1,*"           # recalculation of the data source value. in this case, the value is multiplied by -1 to invert the value for better visualization in the graph.
     style: 'AREA'
     color: '#00FF00'                # color of the line in the graph.
     Unit: sectors                   # unit of measurement for the channel, which is displayed on the legend of the graph.
@@ -466,7 +464,6 @@ shellyplug-083A8DF437C7:
     ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
     Name: Read                      # name of the channel that is to be displayed in the legend of the graph.
     rrd_DS: ds1                     # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
-    CDEF: "ds1n=ds1,-1,*"           # recalculation of the data source value. in this case, the value is multiplied by -1 to invert the value for better visualization in the graph.
     style: 'AREA'
     color: '#00FF00'                # color of the line in the graph.
     Unit: sectors                   # unit of measurement for the channel, which is displayed on the legend of the graph.
@@ -571,6 +568,9 @@ ShellyPStripG4-98A3167B61A0:
 
 ShellyPro3EM-ECE334F6A15C:
   category: energy                  # to witch category the device belongs to. this is used for grouping devices together.
+  split:
+    - [Pro3_consumption, channel_1, channel_2]
+    - [Pro3_power, channel_0]
   TimeText:
     - [4, hour]
     - [1, day]
@@ -584,6 +584,23 @@ ShellyPro3EM-ECE334F6A15C:
     rrd_DS: total_act_power         # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
     color: '#00FF00'                # color of the line in the graph.
     Unit: W                         # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_1:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: 'Total energy'            # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: total_act            # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    style: 'AREA'
+    color: '#0000FF'                # color of the line in the graph.
+    Unit: kWh                       # unit of measurement for the channel, which is displayed on the legend of the graph.
+  channel_2:
+    ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
+    Name: 'Total ret energy'            # name of the channel that is to be displayed in the legend of the graph.
+    rrd_DS: total_act_ret            # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    CDEF: "total_act_retn=total_act_ret,-1,*"    
+    style: 'AREA'
+    color: '#00FF00'                # color of the line in the graph.
+    Unit: kWh                       # unit of measurement for the channel, which is displayed on the legend of the graph.
+
+
 
 last_diagram: this_item_is_used_to_mark_the_end_of_the_diagram_list
 # -----------------------------------------------------------------------------------------------------------------
