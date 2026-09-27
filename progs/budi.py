@@ -280,6 +280,7 @@ class BuildGraphics:
 
             self.rrd.run(cmd)
             logger.debug(f"Graph created for {node} - {time_text}")
+            logger.debug(f"Graph command: {cmd}")
 
 
 # ============================================================================== 
