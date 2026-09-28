@@ -588,6 +588,7 @@ ShellyPro3EM-ECE334F6A15C:
     ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
     Name: 'Total energy'            # name of the channel that is to be displayed in the legend of the graph.
     rrd_DS: total_act            # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    CDEF: "total_act_n=total_act,60,*"    
     style: 'AREA'
     color: '#0000FF'                # color of the line in the graph.
     Unit: kWh                       # unit of measurement for the channel, which is displayed on the legend of the graph.
@@ -595,7 +596,7 @@ ShellyPro3EM-ECE334F6A15C:
     ID: ''                          # identifier for the channel, if False = ignore this channel else for future use
     Name: 'Total ret energy'            # name of the channel that is to be displayed in the legend of the graph.
     rrd_DS: total_act_ret            # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
-    CDEF: "total_act_retn=total_act_ret,-1,*"    
+    CDEF: "total_act_retn=total_act_ret,-60,*"    
     style: 'AREA'
     color: '#00FF00'                # color of the line in the graph.
     Unit: kWh                       # unit of measurement for the channel, which is displayed on the legend of the graph.
