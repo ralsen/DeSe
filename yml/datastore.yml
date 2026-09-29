@@ -865,12 +865,16 @@ DataStores:
                 - [Name, name, CURRENT_DATA]
                 - [IP, IP, CURRENT_DATA]
                 - [Type, Type, CURRENT_DATA]
+                - [Uptime, uptime, CURRENT_DATA]
                 - ['Power Infos', __Devider, DIV_DATA]
                 - [Power, Power, CURRENT_DATA]
+                - [Total, total, CURRENT_DATA]
                 - [DataStore Statistics, __Devider, DIV_DATA]
             __RRD_DB__:
                 -   [[OUTFILE, §Commons, Store],
-                    [SELF, §Power, CURRENT_DATA]]
+                    [SELF, §uptime, CURRENT_DATA],
+                    [SELF, §Power, CURRENT_DATA],
+                    [SELF, §total, CURRENT_DATA]]
         __Devider:
             DIV_DATA: "- - - - >"
         name:                 
@@ -881,7 +885,11 @@ DataStores:
             CSV_MODE: 'CHANGE'            
         Type:                 
             CSV_MODE: 'CHANGE'
+        uptime:
+            CSV_MODE: 'CHANGE'
         Power:
+            CSV_MODE: 'CHANGE'
+        total:
             CSV_MODE: 'CHANGE'
 
     S3PM-001PCEU16:

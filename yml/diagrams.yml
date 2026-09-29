@@ -389,7 +389,7 @@ shellyplug-083A8DF437C7:
   channel_0:
     ID: Balkonkraftwerk             # identifier for the channel, if False = ignore this channel else for future use
     Name: shellyplug                # name of the channel that is to be displayed in the legend of the graph.
-    rrd_DS: verbrauch               # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
+    rrd_DS: Power               # data source name in the RRD file. this is used to fetch the data for this channel from the RRD file.
     color: '#00FF00'                # color of the line in the graph.
     Unit: Power                     # unit of measurement for the channel, which is displayed on the legend of the graph.
 # -----------------------------------------------------------------------------------------------------------------
