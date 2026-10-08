@@ -872,7 +872,7 @@ DataStores:
                 - [DataStore Statistics, __Devider, DIV_DATA]
             __RRD_DB__:
                 -   [[OUTFILE, §Commons, Store],
-                    [SELF, §uptime, CURRENT_DATA],
+                    [SELF, CONST, 0],
                     [SELF, §Power, CURRENT_DATA],
                     [SELF, §total, CURRENT_DATA]]
         __Devider:
