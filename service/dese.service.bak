@@ -1,0 +1,19 @@
+[Unit]
+Description=device Server
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/mnt/samba/Daten/Projekte/Projects/DaBo64/progs
+ExecStartPre=/bin/sleep 5
+ExecStart=/mnt/samba/Daten/Projekte/Projects/DaBo64/env/bin/python dese.py
+Restart=always
+
+# Neustart-Optionen
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+

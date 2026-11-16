@@ -1,0 +1,19 @@
+[Unit]
+Description=Web Server
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/mnt/samba/Daten/Projekte/Projects/DaBo64/progs
+ExecStartPre=/bin/sleep 5
+ExecStart=node wese.js
+Restart=always
+
+# Neustart-Otionen
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
