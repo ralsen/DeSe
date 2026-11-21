@@ -137,14 +137,14 @@ class webserverHandler(BaseHTTPRequestHandler):
                 ds_copy = self.cfg['__Dstore__'].cfg
                 current_ds = self.filter_dict(ds_copy, "CURRENT_DATA", keep_prefix=False)
                 message = self.make_public_dict(current_ds)
-                logger.debug(message)
+                #logger.debug(message)
             elif path.endswith("/sendRRDHistory"):
                 # Parameter aus den Query-Schlüsseln ziehen (query_components liefert Listen zurück)
                 filename = f"{self.cfg['RRDPath']}/" + query_components.get('file', ['ShellyPStripG4-98A3167B61A0.rrd'])[0]
                 start = query_components.get('start', ['-1w'])[0]
                 end = query_components.get('end', ['now'])[0]
                 
-                logger.debug(f"got RRD request: file={filename}, start={start}, end={end}")
+                #logger.debug(f"got RRD request: file={filename}, start={start}, end={end}")
                 
                 # Lokale Funktion aufrufen, um RRD auszulesen
                 message = self.fetch_rrd(filename, start, end)
@@ -161,7 +161,7 @@ class webserverHandler(BaseHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Headers', 'Content-Type')
             self.end_headers()
             self.wfile.write(json.dumps(message).encode())           
-            logger.debug(f"Response sent for path: {self.path} with message: {message}")
+            #logger.debug(f"Response sent for path: {self.path} with message: {message}")
             return
 
         except IOError:
@@ -175,7 +175,7 @@ class webserverHandler(BaseHTTPRequestHandler):
             post_data = self.rfile.read(content_length) # <--- Gets the data itself
             dict_str = post_data.decode('UTF-8')
             data = json.loads(dict_str)
-            #logger.debug(f"receiving: {data}")
+            logger.debug(f"receiving: {data}")
             self.send_response(301)
             self.send_header('Content-Type', 'text/html')
             self.end_headers()
@@ -189,7 +189,7 @@ class webserverHandler(BaseHTTPRequestHandler):
             except Exception as err:
                 logger.info(f"no 'name' or 'Type' specified: {err}\nin this dataset\n{data}")
             finally:
-                logger.debug(f"received data from : {data['name']}")
+                #logger.debug(f"received data from : {data['name']}")
                 if data['name'] not in self.service:
                     self.cfg['__Dstore__'].append(data['name'], data['Type'])
                 dataset = {data['name']: data}
