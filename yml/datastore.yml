@@ -184,6 +184,8 @@ DataStores:
         TransmitCycle:
             CURRENT_DATA: 20
             CSV_MODE: 'CHANGE'
+        MeasuringCycle:             # is not used for Switches, but old Nodes have this value, so we keep it for compatibility
+            CSV_MODE: 'CHANGE'
         Hash:
             CSV_MODE: 'CHANGE'
         Size:
